@@ -27,6 +27,37 @@
     save: document.getElementById("btn-save")
   };
 
+  // Forward the editor's own CSS vars to the active theme's design tokens so
+  // the editor page adopts the theme (colors/fonts/radius) while keeping its
+  // layout. This is "design tokens only" — same rule as the Bloger tool pages.
+  var EDITOR_PALETTE = {
+    "--ink":   "--be-text",
+    "--muted": "--be-muted",
+    "--line":  "--be-border",
+    "--panel": "--be-page-bg"
+  };
+
+  function applyEditorTheme() {
+    var tid = Blog.currentThemeId(data);
+    var theme = Blog.themes[tid] || Blog.themes[Object.keys(Blog.themes)[0]];
+    if (!theme) return;
+    var el = document.getElementById("be-editor-design");
+    if (!el) {
+      el = document.createElement("style");
+      el.id = "be-editor-design";
+      document.head.appendChild(el);
+    }
+    var lines = Object.keys(EDITOR_PALETTE).map(function (t) {
+      return "  " + t + ": var(" + EDITOR_PALETTE[t] + ");";
+    });
+    el.textContent =
+      (theme.designCss || "") +
+      "\n:root {\n" + lines.join("\n") + "\n}" +
+      "\nbody { font-family: var(--be-body-font, inherit); }" +
+      "\n.be-content { color: var(--be-text, #1a1a1a); }" +
+      "\n.be-quote .be-content { color: var(--be-quote-color, #555); border-left-color: var(--be-quote-border, #bbb); }";
+  }
+
   function slug(s) {
     return String(s || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
   }
@@ -93,6 +124,7 @@
     els.theme.addEventListener("change", function () {
       data.theme = els.theme.value;
       autoSave();
+      applyEditorTheme();
     });
   }
 
@@ -241,6 +273,7 @@
     bindTheme();
     renderPosts();
     preview();
+    applyEditorTheme();
     focusPostFromUrl();
 
     els.addPost.addEventListener("click", addPost);

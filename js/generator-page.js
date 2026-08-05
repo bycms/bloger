@@ -10,6 +10,9 @@ var Bloger = window.Bloger || {};
 (function () {
   var params = new URLSearchParams(window.location.search);
   var themeId = params.get("theme");
+  // &saved=1 forces a saved theme (built in the theme builder) even when a
+  // registered theme shares the id.
+  var savedFlag = params.get("saved") === "1";
 
   var errorBox = document.getElementById("generator-error");
   var statusBox = document.getElementById("status");
@@ -20,6 +23,7 @@ var Bloger = window.Bloger || {};
   var data = { site: { title: "", subtitle: "", bio: "", accent: "#111111" }, posts: [], theme: themeId };
   var editors = [];
   var previewTimer = null;
+  var pack = null; // cached theme pack (fetched once) for instant live preview
 
   function showError(msg) {
     errorBox.innerHTML = msg;
@@ -63,10 +67,18 @@ var Bloger = window.Bloger || {};
 
   /* ---------- design tokens panel ---------- */
 
+  // Adopt the theme's design tokens on the Bloger page itself (tokens only,
+  // the tool keeps its layout but picks up the theme's palette/font/radius).
+  function applyToolTheme() {
+    if (Bloger.Design && Bloger.Design.applyToPage) {
+      Bloger.Design.applyToPage(data.design, Bloger.Design.TOOL_PALETTE);
+    }
+  }
+
   function renderDesignPanel() {
     var panel = document.getElementById("design-panel");
     if (!panel) return;
-    Bloger.Design.renderPanel(panel, data.design, function () { queuePreview(); });
+    Bloger.Design.renderPanel(panel, data.design, function () { queuePreview(); applyToolTheme(); });
   }
 
   /* ---------- posts editor ---------- */
@@ -164,17 +176,26 @@ var Bloger = window.Bloger || {};
 
   function queuePreview() {
     clearTimeout(previewTimer);
-    previewTimer = setTimeout(runPreview, 250);
+    previewTimer = setTimeout(runPreview, 120);
   }
 
-  async function runPreview() {
-    if (!manifest) return;
+  // Re-render the preview synchronously from the cached pack — no
+  // network on each keystroke, so it is genuinely "live".
+  function runPreview() {
+    if (!pack || !manifest) return;
     try {
-      var doc = await Bloger.Render.dataDocument(themeId, data);
+      var p = Bloger.Render.packWithDesign(pack, data);
+      var doc = Bloger.Render.packDocument(p, data, Bloger.Render.resolveView(data).id);
       previewFrame.srcdoc = doc;
     } catch (e) {
       /* preview unavailable */
     }
+  }
+
+  // Load the theme pack once (static files) and then preview instantly.
+  async function loadPack() {
+    pack = await Bloger.Render.buildPack(themeId, data, { saved: savedFlag });
+    runPreview();
   }
 
   /* ---------- download ---------- */
@@ -218,7 +239,7 @@ var Bloger = window.Bloger || {};
       return;
     }
     try {
-      manifest = await Bloger.Registry.manifest(themeId);
+      manifest = await Bloger.Registry.manifest(themeId, { saved: savedFlag });
     } catch (e) {
       showError("Could not load theme \"" + themeId + "\": " + e.message);
       return;
@@ -236,10 +257,11 @@ var Bloger = window.Bloger || {};
       ? Bloger.Design.merge(manifest.design, null)
       : { page: {}, blocks: {} };
 
+    applyToolTheme();
     bindSite();
     renderDesignPanel();
     renderPosts();
-    runPreview();
+    loadPack();
 
     document.getElementById("add-post").addEventListener("click", addPost);
     document.getElementById("download-btn").addEventListener("click", download);
@@ -249,6 +271,7 @@ var Bloger = window.Bloger || {};
       data.design = Bloger.Design ? Bloger.Design.merge(manifest.design, null) : { page: {}, blocks: {} };
       bindSite();
       renderDesignPanel();
+      applyToolTheme();
       renderPosts();
       runPreview();
       showStatus("Reset to sample content.", true);

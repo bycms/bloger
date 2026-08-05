@@ -26,15 +26,30 @@ Bloger.Registry = {
     return list.find(function (t) { return t.id === id; }) || null;
   },
 
-  /* Fetch the full manifest for a theme by id. */
-  manifest: async function (id) {
+  /* Fetch the full manifest for a theme by id. Registered themes are read
+   * from their folder; a theme saved in the theme builder (localStorage)
+   * resolves to a synthetic starter manifest flagged `saved`. Pass
+   * `{ saved: true }` to force the saved theme even when a registered theme
+   * shares the id. */
+  manifest: async function (id, opts) {
+    opts = opts || {};
     if (this._manifests && this._manifests[id]) return this._manifests[id];
-    const res = await fetch("themes/" + encodeURIComponent(id) + "/manifest.json", { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to load manifest for theme: " + id);
-    const m = await res.json();
-    if (!this._manifests) this._manifests = {};
-    this._manifests[id] = m;
-    return m;
+    var entry = opts.saved ? null : await this.get(id);
+    if (entry) {
+      const res = await fetch("themes/" + encodeURIComponent(id) + "/manifest.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("Failed to load manifest for theme: " + id);
+      const m = await res.json();
+      m.saved = false;
+      if (!this._manifests) this._manifests = {};
+      this._manifests[id] = m;
+      return m;
+    }
+    if (Bloger.Scaffold && Bloger.Scaffold.savedTheme && Bloger.Scaffold.savedTheme(id)) {
+      if (!this._manifests) this._manifests = {};
+      this._manifests[id] = Bloger.Scaffold.savedManifest(id);
+      return this._manifests[id];
+    }
+    throw new Error("Failed to load manifest for theme: " + id);
   },
 
   /* Fetch the raw text content of one file within a theme. */

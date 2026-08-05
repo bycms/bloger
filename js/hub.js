@@ -21,7 +21,7 @@ var Bloger = window.Bloger || {};
     var preview = document.createElement("div");
     preview.className = "theme-preview";
     preview.innerHTML =
-      '<span class="theme-preview-label">' + Bloger.esc(theme.name) + " preview</span>";
+      '<span class="theme-preview-label">' + " preview</span>";
     var iframe = document.createElement("iframe");
     iframe.title = theme.name + " preview";
     iframe.setAttribute("loading", "lazy");
@@ -45,6 +45,48 @@ var Bloger = window.Bloger || {};
     card.appendChild(preview);
     card.appendChild(body);
     return { card: card, iframe: iframe };
+  }
+
+  // Saved themes (built in the theme builder) are shown so the user can find
+  // them on the hub later and preview / generate / edit them.
+  function renderSavedThemes() {
+    var mount = document.getElementById("saved-themes");
+    var grid = document.getElementById("saved-grid");
+    if (!mount || !grid) return;
+    var list = (Bloger.Library && Bloger.Library.list()) || [];
+    if (!list.length) { mount.classList.add("hidden"); return; }
+    mount.classList.remove("hidden");
+    grid.innerHTML = "";
+    list.forEach(function (t) {
+      var card = document.createElement("article");
+      card.className = "theme-card";
+      var preview = document.createElement("div");
+      preview.className = "theme-preview";
+      preview.innerHTML = '<span class="theme-preview-label">saved</span>';
+      var iframe = document.createElement("iframe");
+      iframe.setAttribute("loading", "lazy");
+      preview.appendChild(iframe);
+      var body = document.createElement("div");
+      body.className = "theme-body";
+      body.innerHTML =
+        "<h2 class=\"theme-name\">" + Bloger.esc(t.name || t.id) + "</h2>" +
+        "<p class=\"theme-desc\">Saved locally in this browser · <span class=\"mono\">" + Bloger.esc(t.id) + "</span></p>";
+      var actions = document.createElement("div");
+      actions.className = "theme-actions";
+      actions.innerHTML =
+        '<a class="btn btn-ghost" href="preview.html?theme=' + encodeURIComponent(t.id) + '&saved=1">Preview</a>' +
+        '<a class="btn" href="generator.html?theme=' + encodeURIComponent(t.id) + '&saved=1">Generate</a>' +
+        '<a class="btn btn-ghost" href="new-theme.html?edit=' + encodeURIComponent(t.id) + '">Edit</a>';
+      body.appendChild(actions);
+      card.appendChild(preview);
+      card.appendChild(body);
+      grid.appendChild(card);
+      (function (iframe) {
+        Bloger.Render.indexDocument(t.id, { saved: true })
+          .then(function (doc) { iframe.srcdoc = doc; })
+          .catch(function () { /* preview unavailable — leave blank */ });
+      })(iframe);
+    });
   }
 
   async function init() {
@@ -72,6 +114,13 @@ var Bloger = window.Bloger || {};
       return;
     }
 
+    // Adopt a theme's design tokens on the hub page itself (first theme, or
+    // ?theme=<id> if provided) so Bloger's own page is themed too.
+    var hubTheme = new URLSearchParams(window.location.search).get("theme") || list[0].id;
+    if (Bloger.Design && Bloger.Design.applyThemeToTool) {
+      Bloger.Design.applyThemeToTool(hubTheme, Bloger.Design.TOOL_PALETTE);
+    }
+
     for (var i = 0; i < list.length; i++) {
       var t = list[i];
       var manifest;
@@ -89,6 +138,8 @@ var Bloger = window.Bloger || {};
           .catch(function () { /* preview unavailable — leave blank */ });
       })(built.iframe);
     }
+
+    renderSavedThemes();
   }
 
   init();

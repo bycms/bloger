@@ -101,6 +101,13 @@ Bloger.Generator = {
   // is embedded both as data and as a ready-made `:root` style
   // block that the runtime injects.
   compilePack: async function (manifest, design) {
+    // Saved themes have no folder on disk — compile the starter templates
+    // with the resolved design instead of fetching theme files.
+    if (manifest.saved) {
+      return Bloger.Scaffold.packJsFromPack(
+        Bloger.Scaffold.packWithDesign(manifest.id, manifest.name, design)
+      );
+    }
     var templates = manifest.templates || {};
     var home = await Bloger.Registry.fetchFile(
       manifest.id,

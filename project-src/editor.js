@@ -244,6 +244,8 @@
         emit(ctx);
       }
     });
+    // Live-update on typing (so the preview reflects list edits).
+    item.addEventListener("input", function () { emit(ctx); });
   }
 
   /* ---------------- table block ---------------- */
@@ -262,6 +264,8 @@
           var td = el("td", "be-cell");
           td.setAttribute("contenteditable", "true");
           td.textContent = c || "";
+          // Live-update on typing (so the preview reflects table edits).
+          td.addEventListener("input", function () { emit(ctx); });
           tr.appendChild(td);
         });
         // Cell menu: remove row / add col handled via toolbar buttons.

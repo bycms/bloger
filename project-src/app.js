@@ -67,33 +67,36 @@
   /* ---------------- shell styles (topbar + sidebar) ---------------- */
 
   var SHELL_CSS =
-    ".be-topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;height:52px;padding:0 16px;" +
-      "background:var(--be-page-bg,#fff);border-bottom:1px solid var(--be-border,#e0e0e0);" +
-      "font-family:var(--be-body-font,system-ui);}" +
-    ".be-toggle{background:none;border:1px solid var(--be-border,#e0e0e0);color:var(--be-text,#111);" +
-      "font-size:15px;line-height:1;width:32px;height:32px;cursor:pointer;border-radius:var(--be-corner-radius,0);}" +
-    ".be-site-title{font-weight:700;color:var(--be-text,#111);text-decoration:none;font-size:17px;}" +
+    ".be-topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;height:var(--be-topbar-height,52px);padding:0 16px;" +
+      "background:var(--be-topbar-bg,var(--be-page-bg,#fff));border-bottom:1px solid var(--be-topbar-border,var(--be-border,#e0e0e0));" +
+      "font-family:var(--be-topbar-font,var(--be-body-font,system-ui));}" +
+    ".be-toggle{background:none;border:1px solid var(--be-topbar-border,var(--be-border,#e0e0e0));color:var(--be-topbar-fg,var(--be-text,#111));" +
+      "font-size:15px;line-height:1;width:32px;height:32px;cursor:pointer;border-radius:var(--be-toggle-radius,var(--be-corner-radius,0));}" +
+    ".be-site-title{font-weight:var(--be-topbar-title-weight,700);color:var(--be-topbar-fg,var(--be-text,#111));text-decoration:none;font-size:var(--be-topbar-title-size,17px);}" +
     ".be-topbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px;}" +
     ".be-edit-link{color:var(--be-muted,#666);font-size:13px;text-decoration:none;}" +
     ".be-edit-link:hover{color:var(--be-text,#111);text-decoration:underline;}" +
     ".be-shell{display:flex;align-items:stretch;min-height:calc(100vh - 96px);}" +
-    ".be-sidebar{width:262px;flex-shrink:0;border-right:1px solid var(--be-border,#e0e0e0);" +
-      "background:var(--be-page-bg,#fff);overflow-y:auto;padding:14px 8px;transition:width .18s ease, padding .18s ease;" +
+    ".be-sidebar{width:var(--be-sidebar-width,262px);flex-shrink:0;border-right:1px solid var(--be-sidebar-border,var(--be-border,#e0e0e0));" +
+      "background:var(--be-sidebar-bg,var(--be-page-bg,#fff));overflow-y:auto;padding:14px 8px;" +
+      "transition:width var(--be-duration,.18s) var(--be-easing,ease),padding var(--be-duration,.18s) var(--be-easing,ease);" +
       "font-family:var(--be-body-font,system-ui);}" +
-    ".be-sidebar-head{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--be-muted,#666);padding:2px 8px 10px;}" +
-    ".be-sidebar-nav{display:flex;flex-direction:column;gap:2px;}" +
-    ".be-sidebar-item{display:block;text-decoration:none;color:var(--be-text,#111);padding:8px 10px;border-left:2px solid transparent;}" +
-    ".be-sidebar-item:hover{background:rgba(0,0,0,.04);}" +
-    ".be-sidebar-item.active{border-left-color:var(--be-accent,#111);background:rgba(0,0,0,.05);}" +
-    ".be-sidebar-title{display:block;font-size:14px;font-weight:600;line-height:1.3;}" +
-    ".be-sidebar-date{display:block;font-size:12px;color:var(--be-muted,#666);margin-top:3px;}" +
+    ".be-sidebar-head{font-size:var(--be-sidebar-head-size,11px);text-transform:uppercase;letter-spacing:.06em;color:var(--be-muted,#666);padding:2px 8px 10px;}" +
+    ".be-sidebar-nav{display:flex;flex-direction:column;gap:var(--be-sidebar-gap,2px);}" +
+    ".be-sidebar-item{display:block;text-decoration:none;color:var(--be-sidebar-fg,var(--be-text,#111));padding:var(--be-sidebar-item-padding,8px 10px);" +
+      "border-left:2px solid transparent;border-radius:var(--be-sidebar-item-radius,0);" +
+      "transition:background var(--be-duration,.18s) var(--be-easing,ease),color var(--be-duration,.18s) var(--be-easing,ease);}" +
+    ".be-sidebar-item:hover{background:var(--be-sidebar-hover-bg,rgba(0,0,0,.04));}" +
+    ".be-sidebar-item.active{border-left-color:var(--be-sidebar-active-bar,var(--be-accent,#111));background:var(--be-sidebar-active-bg,rgba(0,0,0,.05));}" +
+    ".be-sidebar-title{display:block;font-size:var(--be-sidebar-title-size,14px);font-weight:var(--be-sidebar-title-weight,600);line-height:1.3;}" +
+    ".be-sidebar-date{display:block;font-size:var(--be-sidebar-date-size,12px);color:var(--be-sidebar-date-color,var(--be-muted,#666));margin-top:3px;}" +
     ".be-sidebar-empty{padding:6px 10px;color:var(--be-muted,#666);font-size:13px;}" +
     "body.be-collapsed .be-sidebar{width:0;padding-left:0;padding-right:0;border-right:0;overflow:hidden;}" +
     ".be-preview .be-sidebar{display:none;}" +
-    ".be-content{flex:1;min-width:0;padding:36px 44px;}" +
+    ".be-content{flex:1;min-width:0;padding:36px 44px;background:var(--be-content-bg,transparent);}" +
     ".be-content-inner{max-width:var(--be-max-width,680px);margin:0 auto;}" +
-    ".be-footer{border-top:1px solid var(--be-border,#e0e0e0);color:var(--be-muted,#666);font-size:12px;" +
-      "display:flex;justify-content:space-between;gap:12px;padding:14px 24px;flex-wrap:wrap;" +
+    ".be-footer{background:var(--be-footer-bg,var(--be-page-bg,#fff));border-top:1px solid var(--be-footer-border,var(--be-border,#e0e0e0));color:var(--be-footer-fg,var(--be-muted,#666));font-size:var(--be-footer-size,12px);" +
+      "display:flex;justify-content:space-between;gap:12px;padding:var(--be-footer-padding,14px 24px);flex-wrap:wrap;" +
       "font-family:var(--be-body-font,system-ui);}" +
     "@media (max-width:640px){" +
       ".be-sidebar{display:none;}" +
@@ -164,7 +167,14 @@
       var s = document.createElement("script");
       s.src = p.file;
       s.onload = function () {
-        if (window.THEMES && window.THEMES[p.id]) themes[p.id] = window.THEMES[p.id];
+        // Register under the registry id. If a pack registered under a
+        // different id than the one in themes/index.js (e.g. a hand-edited
+        // registry or a stale config), fall back to the first pack that did
+        // load so the blog never reports a missing theme.
+        var loaded = window.THEMES || {};
+        var keys = Object.keys(loaded);
+        var pack = loaded[p.id] || (keys.length ? loaded[keys[0]] : null);
+        if (pack) themes[p.id] = pack;
         remaining--;
         if (remaining <= 0) finish();
       };
@@ -360,7 +370,13 @@
       var app = document.getElementById("app");
       if (!app) return;
       if (!theme) {
-        app.innerHTML = "<p>No theme packs found. Check <code>themes/index.js</code>.</p>";
+        app.innerHTML =
+          "<p style=\"padding:24px 24px 0\">No theme packs were found.</p>" +
+          "<p style=\"padding:8px 24px 24px;max-width:46em\">This blog needs at least one " +
+          "compiled theme pack inside <code>themes/</code> (for example " +
+          "<code>themes/minimal.js</code>) registered in <code>themes/index.js</code>. " +
+          "If you just downloaded this folder, make sure the whole <code>themes/</code> folder " +
+          "and <code>config.js</code> were unzipped next to this page.</p>";
         return;
       }
 
@@ -376,6 +392,9 @@
         Object.keys(data.site || {}).forEach(function (k) { styleValues[k] = data.site[k]; });
         styleValues.year = new Date().getFullYear();
         styleEl.textContent = substitute(theme.css || "", styleValues);
+        // Theme stylesheet comes AFTER the shell CSS so a theme can restyle
+        // the whole page (topbar/sidebar/footer included), not just the article.
+        document.head.appendChild(styleEl);
       }
 
       var designEl = document.getElementById("design-style");

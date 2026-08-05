@@ -12,13 +12,19 @@
   <main class="page">
     <h1 class="page-title">Bloger</h1>
     <p class="page-sub">
-      Pick a theme, configure your blog, and download a complete static site — generated
-      entirely in your browser. Themes are pluggable: add a folder and it appears here.
+      Your blog template hub. <b>Browse</b> themes, <b>generate</b> them, and <b>preview</b> the editor live. <br/>
+      <a href="new-theme.html">Start building your own themes.</a> They will be auto-saved. 
     </p>
 
     <div id="theme-gallery" class="theme-grid"></div>
 
     <div id="gallery-error" class="msg err hidden"></div>
+
+    <section id="saved-themes" class="saved-section hidden">
+      <h2 class="section-title">Your saved themes</h2>
+      <p class="section-sub">Themes you built in the <a href="new-theme.html">theme builder</a> and saved in this browser. They are ready to preview, generate or edit.</p>
+      <div id="saved-grid" class="theme-grid"></div>
+    </section>
   </main>
 
   <footer class="tool-footer">
@@ -31,6 +37,7 @@
   <script src="js/registry.js"></script>
   <script src="js/generator.js"></script>
   <script src="js/render.js"></script>
+  <script src="js/scaffold.js"></script>
   <script src="js/common.js"></script>
   <script src="js/hub.js"></script>
 </body>

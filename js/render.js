@@ -10,34 +10,36 @@
 var Bloger = window.Bloger || {};
 
 var SHELL_CSS =
-  ".be-topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;height:52px;padding:0 16px;" +
-    "background:var(--be-page-bg,#fff);border-bottom:1px solid var(--be-border,#e0e0e0);" +
-    "font-family:var(--be-body-font,system-ui);}" +
-  ".be-toggle{background:none;border:1px solid var(--be-border,#e0e0e0);color:var(--be-text,#111);" +
-    "font-size:15px;line-height:1;width:32px;height:32px;cursor:pointer;border-radius:var(--be-corner-radius,0);}" +
-  ".be-site-title{font-weight:700;color:var(--be-text,#111);text-decoration:none;font-size:17px;}" +
-  ".be-topbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px;}" +
-  ".be-edit-link{color:var(--be-muted,#666);font-size:13px;text-decoration:none;}" +
-  ".be-edit-link:hover{color:var(--be-text,#111);text-decoration:underline;}" +
-  ".be-shell{display:flex;align-items:stretch;min-height:calc(100vh - 96px);}" +
-  ".be-sidebar{width:262px;flex-shrink:0;border-right:1px solid var(--be-border,#e0e0e0);" +
-    "background:var(--be-page-bg,#fff);overflow-y:auto;padding:14px 8px;transition:width .18s ease;" +
-    "font-family:var(--be-body-font,system-ui);}" +
-  ".be-sidebar-head{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--be-muted,#666);padding:2px 8px 10px;}" +
-  ".be-sidebar-nav{display:flex;flex-direction:column;gap:2px;}" +
-  ".be-sidebar-item{display:block;text-decoration:none;color:var(--be-text,#111);padding:8px 10px;border-left:2px solid transparent;}" +
-  ".be-sidebar-item:hover{background:rgba(0,0,0,.04);}" +
-  ".be-sidebar-item.active{border-left-color:var(--be-accent,#111);background:rgba(0,0,0,.05);}" +
-  ".be-sidebar-title{display:block;font-size:14px;font-weight:600;line-height:1.3;}" +
-  ".be-sidebar-date{display:block;font-size:12px;color:var(--be-muted,#666);margin-top:3px;}" +
-  ".be-sidebar-empty{padding:6px 10px;color:var(--be-muted,#666);font-size:13px;}" +
-  "body.be-collapsed .be-sidebar{width:0;padding-left:0;padding-right:0;border-right:0;overflow:hidden;}" +
-  ".be-preview .be-sidebar{display:none;}" +
-  ".be-content{flex:1;min-width:0;padding:36px 44px;}" +
-  ".be-content-inner{max-width:var(--be-max-width,680px);margin:0 auto;}" +
-  ".be-footer{border-top:1px solid var(--be-border,#e0e0e0);color:var(--be-muted,#666);font-size:12px;" +
-    "display:flex;justify-content:space-between;gap:12px;padding:14px 24px;flex-wrap:wrap;" +
-    "font-family:var(--be-body-font,system-ui);}" +
+    ".be-topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;height:var(--be-topbar-height,52px);padding:0 16px;" +
+      "background:var(--be-topbar-bg,var(--be-page-bg,#fff));border-bottom:1px solid var(--be-topbar-border,var(--be-border,#e0e0e0));" +
+      "font-family:var(--be-topbar-font,var(--be-body-font,system-ui));}" +
+    ".be-toggle{background:none;border:1px solid var(--be-topbar-border,var(--be-border,#e0e0e0));color:var(--be-topbar-fg,var(--be-text,#111));" +
+      "font-size:15px;line-height:1;width:32px;height:32px;cursor:pointer;border-radius:var(--be-toggle-radius,var(--be-corner-radius,0));}" +
+    ".be-site-title{font-weight:var(--be-topbar-title-weight,700);color:var(--be-topbar-fg,var(--be-text,#111));text-decoration:none;font-size:var(--be-topbar-title-size,17px);}" +
+    ".be-topbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px;}" +
+    ".be-edit-link{color:var(--be-muted,#666);font-size:13px;text-decoration:none;}" +
+    ".be-edit-link:hover{color:var(--be-text,#111);text-decoration:underline;}" +
+    ".be-shell{display:flex;align-items:stretch;min-height:calc(100vh - 96px);}" +
+    ".be-sidebar{width:var(--be-sidebar-width,262px);flex-shrink:0;border-right:1px solid var(--be-sidebar-border,var(--be-border,#e0e0e0));" +
+      "background:var(--be-sidebar-bg,var(--be-page-bg,#fff));overflow-y:auto;padding:14px 8px;" +
+      "transition:width var(--be-duration,.18s) var(--be-easing,ease);" +
+      "font-family:var(--be-body-font,system-ui);}" +
+    ".be-sidebar-head{font-size:var(--be-sidebar-head-size,11px);text-transform:uppercase;letter-spacing:.06em;color:var(--be-muted,#666);padding:2px 8px 10px;}" +
+    ".be-sidebar-nav{display:flex;flex-direction:column;gap:var(--be-sidebar-gap,2px);}" +
+    ".be-sidebar-item{display:block;text-decoration:none;color:var(--be-sidebar-fg,var(--be-text,#111));padding:var(--be-sidebar-item-padding,8px 10px);" +
+      "border-left:2px solid transparent;border-radius:var(--be-sidebar-item-radius,0);" +
+      "transition:background var(--be-duration,.18s) var(--be-easing,ease),color var(--be-duration,.18s) var(--be-easing,ease);}" +
+    ".be-sidebar-item:hover{background:var(--be-sidebar-hover-bg,rgba(0,0,0,.04));}" +
+    ".be-sidebar-item.active{border-left-color:var(--be-sidebar-active-bar,var(--be-accent,#111));background:var(--be-sidebar-active-bg,rgba(0,0,0,.05));}" +
+    ".be-sidebar-title{display:block;font-size:var(--be-sidebar-title-size,14px);font-weight:var(--be-sidebar-title-weight,600);line-height:1.3;}" +
+    ".be-sidebar-date{display:block;font-size:var(--be-sidebar-date-size,12px);color:var(--be-sidebar-date-color,var(--be-muted,#666));margin-top:3px;}" +
+    ".be-sidebar-empty{padding:6px 10px;color:var(--be-muted,#666);font-size:13px;}" +
+    "body.be-collapsed .be-sidebar{width:0;padding-left:0;padding-right:0;border-right:0;overflow:hidden;}" +
+    ".be-preview .be-sidebar{display:none;}" +
+    ".be-content{flex:1;min-width:0;padding:36px 44px;background:var(--be-content-bg,transparent);}" +
+    ".be-content-inner{max-width:var(--be-max-width,680px);margin:0 auto;}" +
+    ".be-footer{background:var(--be-footer-bg,var(--be-page-bg,#fff));border-top:1px solid var(--be-footer-border,var(--be-border,#e0e0e0));color:var(--be-footer-fg,var(--be-muted,#666));font-size:var(--be-footer-size,12px);" +
+      "display:flex;justify-content:space-between;gap:12px;padding:var(--be-footer-padding,14px 24px);flex-wrap:wrap;" +
   "@media (max-width:640px){" +
     ".be-sidebar{display:none;}" +
     ".be-content{padding:20px 18px;}" +
@@ -78,9 +80,17 @@ Bloger.Render = {
     return p.id || Bloger.Render.slug(p.title || "post-" + (i + 1));
   },
 
-  // Build a pack-like object from a registered theme (mirrors the generator).
-  buildPack: async function (themeId, data) {
-    var manifest = await Bloger.Registry.manifest(themeId);
+  // Build a pack-like object from a theme (mirrors the generator). Handles
+  // both registered themes (folder) and saved themes (theme builder).
+  buildPack: async function (themeId, data, opts) {
+    var manifest = await Bloger.Registry.manifest(themeId, opts);
+    if (manifest.saved) {
+      return Bloger.Scaffold.packWithDesign(
+        manifest.id,
+        manifest.name,
+        Bloger.Design.merge(manifest.design, data && data.design)
+      );
+    }
     var templates = manifest.templates || {};
     var home = await Bloger.Registry.fetchFile(
       themeId,
@@ -102,7 +112,26 @@ Bloger.Render = {
       postTemplate: Bloger.Generator.sanitizeTemplate(post),
       js: js,
       design: design,
-      designCss: Bloger.Design ? Bloger.Design.styleBlock(design) : ""
+      designCss: Bloger.Design ? Bloger.Design.styleBlock(design) : "",
+      designManifest: manifest.design || {}
+    };
+  },
+
+  // Recompute a cached pack's design from the current data WITHOUT
+  // re-fetching the theme (used for instant live previews).
+  packWithDesign: function (pack, data) {
+    var design = Bloger.Design
+      ? Bloger.Design.merge(pack.designManifest, data && data.design)
+      : (pack.design || {});
+    return {
+      id: pack.id,
+      name: pack.name,
+      css: pack.css,
+      homeTemplate: pack.homeTemplate,
+      postTemplate: pack.postTemplate,
+      js: pack.js,
+      design: design,
+      designCss: Bloger.Design ? Bloger.Design.styleBlock(design) : (pack.designCss || "")
     };
   },
 
@@ -203,15 +232,15 @@ Bloger.Render = {
   },
 
   // Registered-theme previews (hub gallery + preview.html).
-  indexDocument: async function (themeId) {
-    var data = Bloger.Render.sampleConfig(await Bloger.Registry.manifest(themeId));
-    var pack = await Bloger.Render.buildPack(themeId, data);
+  indexDocument: async function (themeId, opts) {
+    var data = Bloger.Render.sampleConfig(await Bloger.Registry.manifest(themeId, opts));
+    var pack = await Bloger.Render.buildPack(themeId, data, opts);
     return Bloger.Render.packDocument(pack, data, Bloger.Render.resolveView(data).id);
   },
 
-  postDocument: async function (themeId) {
-    var data = Bloger.Render.sampleConfig(await Bloger.Registry.manifest(themeId));
-    var pack = await Bloger.Render.buildPack(themeId, data);
+  postDocument: async function (themeId, opts) {
+    var data = Bloger.Render.sampleConfig(await Bloger.Registry.manifest(themeId, opts));
+    var pack = await Bloger.Render.buildPack(themeId, data, opts);
     var view = Bloger.Render.resolveView(data);
     return Bloger.Render.packDocument(pack, data, view.id);
   },
@@ -223,8 +252,8 @@ Bloger.Render = {
   },
 
   // Preview for the generator page: a registered theme with adopter data/design.
-  dataDocument: async function (themeId, data) {
-    var pack = await Bloger.Render.buildPack(themeId, data);
+  dataDocument: async function (themeId, data, opts) {
+    var pack = await Bloger.Render.buildPack(themeId, data, opts);
     return Bloger.Render.packDocument(pack, data, Bloger.Render.resolveView(data).id);
   },
 

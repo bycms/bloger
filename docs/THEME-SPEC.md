@@ -268,17 +268,30 @@ without editing theme CSS.
     "bodyFontFamily": "system-ui",
     "arrangement": "single-column"
   },
+  "typography": {
+    "h1": { "fontSize": 30, "fontWeight": 700, "lineHeight": 1.25, "letterSpacing": -0.02, "color": "#111111" },
+    "h2": { "fontSize": 22, "fontWeight": 700, "lineHeight": 1.3, "color": "#111111", "margin": 34 },
+    "h3": { "fontSize": 19, "fontWeight": 700, "lineHeight": 1.3, "color": "#111111", "margin": 28 },
+    "small": { "fontSize": 13, "color": "#6b6b6b" },
+    "link": { "color": "#111111", "hoverColor": "#111111", "underline": "underline", "thickness": 1 }
+  },
   "blocks": {
-    "heading": { "fontFamily": "inherit", "fontSize": 22, "fontWeight": 700, "color": "#111111", "lineHeight": 1.3 },
     "paragraph": { "fontSize": 16, "lineHeight": 1.7, "color": "#111111" },
     "quote": { "color": "#6b6b6b" },
     "list": {},
     "table": { "fontSize": 14 },
     "image": { "cornerRadius": 0 },
-    "code": { "fontFamily": "ui-monospace, monospace", "fontSize": 13 }
-  }
+    "code": { "fontFamily": "ui-monospace, monospace", "fontSize": 13 },
+    "divider": {}
+  },
+  "motion": { "duration": 0.18, "easing": "ease" }
 }
 ```
+
+> Headings are styled through the `typography` scope (h1/h2/h3), not as a block — a `heading`
+> block renders as `<h2>`/`<h3>` and picks up the matching level's tokens. The `shell` scope
+> (topbar/sidebar/footer) follows the same leaf shape as the runtime `SHELL_CSS`.
+
 
 ### How it is applied
 
@@ -289,9 +302,9 @@ without editing theme CSS.
 3. Consumed by theme stylesheets via `var(--be-…)`, e.g.:
 
    ```css
-   body { color: var(--be-text, #111111); }
-   .post-body h2 { font-size: var(--be-heading-size, 22px); }
-   .post-body img { border-radius: var(--be-image-radius, var(--be-corner-radius, 0px)); }
+   body { color: var(--be-text, #111111); font-size: var(--be-body-size, 16px); }
+   .post-body h2 { font-size: var(--be-h2-size, 22px); line-height: var(--be-h2-lh, 1.3); margin-top: var(--be-h2-margin, 34px); }
+   .post-body img { border-radius: var(--be-image-radius, var(--be-corner-radius, 0px)); box-shadow: var(--be-image-shadow, none); }
    ```
 
 ### Current tokens → CSS variables

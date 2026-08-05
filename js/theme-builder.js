@@ -33,9 +33,17 @@ var Bloger = window.Bloger || {};
 
   /* ---------- design ---------- */
 
+  // Adopt the theme being built onto the Bloger page itself (tokens only).
+  function applyToolTheme() {
+    if (Bloger.Design && Bloger.Design.applyToPage) {
+      Bloger.Design.applyToPage(design, Bloger.Design.TOOL_PALETTE);
+    }
+  }
+
   function resetDesign(from) {
     design = Bloger.Design.defaults(from || {});
-    Bloger.Design.renderPanel(designPanel, design, function () { queuePreview(); });
+    Bloger.Design.renderPanel(designPanel, design, function () { queuePreview(); applyToolTheme(); });
+    applyToolTheme();
   }
 
   /* ---------- preview ---------- */
@@ -125,7 +133,15 @@ var Bloger = window.Bloger || {};
   /* ---------- init ---------- */
 
   function init() {
-    resetDesign({});
+    // &edit=<savedId> (from the hub) opens the theme builder already loaded
+    // with that saved theme.
+    var editId = new URLSearchParams(window.location.search).get("edit");
+    var saved = editId ? Bloger.Scaffold.savedTheme(editId) : null;
+    resetDesign(saved ? saved.design : {});
+    if (saved) {
+      idEl.value = saved.id;
+      nameEl.value = saved.name;
+    }
 
     idEl.addEventListener("input", queuePreview);
     nameEl.addEventListener("input", queuePreview);

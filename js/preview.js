@@ -9,6 +9,8 @@ var Bloger = window.Bloger || {};
 (function () {
   var params = new URLSearchParams(window.location.search);
   var themeId = params.get("theme");
+  // &saved=1 forces a saved theme (built in the theme builder).
+  var savedFlag = params.get("saved") === "1";
   var frame = document.getElementById("preview-frame");
   var errorBox = document.getElementById("preview-error");
   var nameEl = document.getElementById("theme-name");
@@ -26,11 +28,15 @@ var Bloger = window.Bloger || {};
     }
     var manifest;
     try {
-      manifest = await Bloger.Registry.manifest(themeId);
+      manifest = await Bloger.Registry.manifest(themeId, { saved: savedFlag });
       nameEl.textContent = manifest.name || themeId;
     } catch (e) {
       showError("Could not load theme \"" + themeId + "\": " + e.message);
       return;
+    }
+    // Adopt the theme's design tokens on the preview page chrome too.
+    if (Bloger.Design && Bloger.Design.applyThemeToTool) {
+      Bloger.Design.applyThemeToTool(themeId, Bloger.Design.TOOL_PALETTE);
     }
     await renderView(currentView);
   }
@@ -38,8 +44,8 @@ var Bloger = window.Bloger || {};
   async function renderView(view) {
     try {
       var doc = view === "post"
-        ? await Bloger.Render.postDocument(themeId)
-        : await Bloger.Render.indexDocument(themeId);
+        ? await Bloger.Render.postDocument(themeId, { saved: savedFlag })
+        : await Bloger.Render.indexDocument(themeId, { saved: savedFlag });
       frame.srcdoc = doc;
     } catch (e) {
       showError("Could not render preview: " + e.message);
@@ -61,8 +67,8 @@ var Bloger = window.Bloger || {};
   document.getElementById("open-new-tab").addEventListener("click", async function () {
     try {
       var doc = currentView === "post"
-        ? await Bloger.Render.postDocument(themeId)
-        : await Bloger.Render.indexDocument(themeId);
+        ? await Bloger.Render.postDocument(themeId, { saved: savedFlag })
+        : await Bloger.Render.indexDocument(themeId, { saved: savedFlag });
       var blob = new Blob([doc], { type: "text/html" });
       var url = URL.createObjectURL(blob);
       window.open(url, "_blank");

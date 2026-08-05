@@ -103,6 +103,285 @@ Reported: a downloaded page served at localhost:3000 still showed raw `{{title}}
    updated the `file://` banner and README to explain Pages deployment. Relative paths + fetch work
    over Pages' https origin.
 
+---
+
+## Iteration 6 — expanded design tokens (a theme rules the whole site)
+
+### Principle
+
+A theme rules **all** of the adopter's blog site. The design-token system must therefore cover
+every visible element — not just the post body — so adopters can restyle anything without touching
+CSS. Today the schema covers page basics + per-block typography; this section enumerates the full
+token surface we should implement.
+
+**Convention.** Every token is a CSS custom property `--be-<scope>-<name>` declared on `:root` by
+`Bloger.Design.styleBlock()` and consumed by (a) the **shell CSS** (topbar/sidebar/footer — the
+`SHELL_CSS` in `project-src/app.js` and `js/render.js`) and (b) **theme stylesheets**
+(`var(--be-…)` with fallbacks). New tokens are added by extending the schema in `js/design.js`
+(and the UI panel auto-renders them); every new token gets a fallback equal to today's look so
+existing themes stay identical.
+
+**Scopes** (prefixes): `page`, `topbar`, `sidebar`, `footer`, `content`, `h1`/`h2`/`h3`, `link`,
+`small`, `block-<type>`.
+
+### 1. Page & layout (`--be-page-*` / global)
+
+| Token | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `--be-page-bg` | color | `#ffffff` | (have) page background |
+| `--be-text` | color | `#111111` | (have) base text |
+| `--be-muted` | color | `#6b6b6b` | (have) secondary text |
+| `--be-border` | color | `#e0e0e0` | (have) borders/dividers |
+| `--be-accent` | color | site accent | (runtime) links/active/emphasis |
+| `--be-corner-radius` | number/px | `0` | (have) global radius default |
+| `--be-max-width` | number/px | `680` | (have) content width |
+| `--be-body-font` | font | `system-ui` | (have) base font |
+| `--be-body-size` | number/px | `16` | **new** base font size |
+| `--be-body-lh` | number | `1.7` | **new** base line height |
+| `--be-body-ls` | number | `0` | **new** base letter-spacing |
+| `--be-text-align` | select | `left` | left / justify / center |
+| `--be-content-gap` | number/px | `18` | **new** vertical rhythm between blocks |
+| `--be-content-bg` | color | transparent | **new** reading surface |
+| `--be-page-bg-image` | url | — | **new** optional background image |
+| `--be-selection-bg` | color | auto | **new** ::selection background |
+| `--be-selection-fg` | color | auto | **new** ::selection text |
+| `--be-focus-ring` | color | accent | **new** keyboard focus outline |
+
+### 2. Topbar (`--be-topbar-*`)
+
+| Token | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `--be-topbar-bg` | color | page-bg | **new** |
+| `--be-topbar-fg` | color | text | **new** title color |
+| `--be-topbar-border` | color | border | **new** bottom border |
+| `--be-topbar-height` | number/px | `52` | **new** |
+| `--be-topbar-font` | font | body-font | **new** |
+| `--be-topbar-title-size` | number/px | `17` | **new** |
+| `--be-topbar-title-weight` | select | `700` | **new** |
+| `--be-topbar-sticky` | select | `yes` | **new** sticky / static |
+| `--be-topbar-shadow` | select | `none` | **new** on scroll |
+| `--be-toggle-radius` | number/px | corner-radius | **new** ☰ button radius |
+
+### 3. Sidebar (`--be-sidebar-*`)
+
+| Token | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `--be-sidebar-bg` | color | page-bg | **new** |
+| `--be-sidebar-fg` | color | text | **new** |
+| `--be-sidebar-border` | color | border | **new** right border |
+| `--be-sidebar-width` | number/px | `262` | **new** expanded width |
+| `--be-sidebar-item-radius` | number/px | `0` | **new** |
+| `--be-sidebar-item-padding` | string | `8px 10px` | **new** |
+| `--be-sidebar-title-size` | number/px | `14` | **new** |
+| `--be-sidebar-title-weight` | select | `600` | **new** |
+| `--be-sidebar-date-size` | number/px | `12` | **new** |
+| `--be-sidebar-date-color` | color | muted | **new** |
+| `--be-sidebar-hover-bg` | color | subtle | **new** |
+| `--be-sidebar-active-bg` | color | subtle | **new** |
+| `--be-sidebar-active-bar` | color | accent | **new** left indicator |
+| `--be-sidebar-head-size` | number/px | `11` | **new** "Posts" label |
+| `--be-sidebar-gap` | number/px | `2` | **new** item spacing |
+
+### 4. Footer (`--be-footer-*`)
+
+| Token | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `--be-footer-bg` | color | page-bg | **new** |
+| `--be-footer-fg` | color | muted | **new** |
+| `--be-footer-border` | color | border | **new** top border |
+| `--be-footer-size` | number/px | `12` | **new** |
+| `--be-footer-padding` | string | `14px 24px` | **new** |
+
+### 5. Typography hierarchy (`--be-h1/2/3-*`, `--be-small-*`, `--be-mono-*`)
+
+Today `heading` is one token set applied to `h2`/`h3`. Split into per-level tokens (fallbacks keep
+the current look):
+
+| Token | Type | Default |
+| --- | --- | --- |
+| `--be-h1-size` / `-weight` / `-lh` / `-ls` / `-color` / `-font` / `-margin` | number/px, select, number, number, color, font, string | 30 / 700 / 1.25 / -0.02em / text / body / 0 |
+| `--be-h2-size` … | same | 22 / 700 / 1.3 / 0 / text / body / 34px top |
+| `--be-h3-size` … | same | 19 / 700 / 1.3 / 0 / text / body / 28px top |
+| `--be-small-size` / `-color` | number/px, color | 13 / muted (dates, captions, meta) |
+| `--be-mono-font` | font | ui-monospace stack |
+
+### 6. Links (`--be-link-*`)
+
+| Token | Type | Default |
+| --- | --- | --- |
+| `--be-link-color` | color | text/accent |
+| `--be-link-hover-color` | color | accent |
+| `--be-link-underline` | select | underline / none / dotted |
+| `--be-link-underline-thickness` | number/px | 1 |
+
+### 7. Per-block tokens (each `--be-<block>-*`)
+
+Already present for every block: `-font`, `-size`, `-lh`, `-color`, `-weight`, `-radius`.
+**Expand each block with:**
+
+| New token | Applies to | Type | Default |
+| --- | --- | --- | --- |
+| `-letter-spacing` | all text blocks | number | 0 |
+| `-margin-top` / `-margin-bottom` | all blocks | number/px | theme rhythm |
+| `-text-align` | text blocks | select | inherit |
+| `-background` | quote, code | color | transparent/soft |
+| `-border-color` / `-border-width` / `-border-style` | quote, table, code, image | color/px/select | border/solid |
+| `-border-left-width` | quote | number/px | 3 |
+| `-padding` | code | string | 14px |
+| `-marker-type` / `-marker-color` / `-indent` / `-item-gap` | list | select/color/px/px | disc / muted / 1.4em / 2px |
+| `-cell-padding` | table | string | 8px 10px |
+| `-header-bg` / `-header-color` | table | color | subtle / text |
+| `-row-stripe-bg` / `-row-hover-bg` | table | color | — |
+| `-shadow` | image, table, code | select | none |
+| `-max-width` | image | percent/px | 100% |
+| `-caption-size` / `-caption-color` | image | number/px, color | 13 / muted |
+| `-style` / `-thickness` / `-spacing` | divider | select/px/px | solid / 1 / 28px |
+
+### 8. Motion (`--be-motion-*`) — optional
+
+`--be-transition-duration` (s), `--be-transition-ease`, `--be-hover-lift` (bool), `--be-fade-in`
+(bool). Applied to shell hover states and reveal.
+
+### 9. Color scheme / dark mode (future)
+
+A `scheme` select (`light` / `dark` / `auto`) plus a full `--be-dark-*` counterpart set applied
+under `@media (prefers-color-scheme: dark)` — lets a theme ship light + dark out of the box.
+
+### Implementation notes
+
+- **Schema:** extend `js/design.js` — add `SHELL_TOKENS` (topbar/sidebar/footer), `TYPE_TOKENS`
+  (h1/h2/h3/small/link/mono), and grow each block set with the new keys. `defaults/merge/cssVars/
+  styleBlock` and the auto-rendered panel pick them up automatically.
+- **Consumption:** the shell CSS (`SHELL_CSS` in `app.js` + `render.js`) switches hard-coded
+  values to `var(--be-topbar-*, …)` etc.; theme stylesheets consume block/typography vars.
+- **Coverage checklist:** every rendered element maps to tokens — page → layout; topbar/sidebar/
+  footer → shell; headings/links/meta → typography; blockquote/list/table/image/code/divider →
+  per-block; all gaps/borders/radius → rhythm & shape.
+- **Backward compatible:** all new tokens default to the current look, so `minimal` and existing
+  packs are unchanged until the adopter customizes.
+
+### Implementation stages (Iteration 6 rolled out in stages)
+
+| Stage | Scope | Status |
+| --- | --- | --- |
+| **1 — Schema + panel + shell** | Rewrite `js/design.js` as a scoped token schema (`page` / `shell{topbar,sidebar,footer}` / `typography{h1,h2,h3,small,link}` / `blocks` + `divider` / `motion`). The **generate page** (`generator.html`) design panel renders every scope with accordions and edits live-update the preview. Shell CSS (`SHELL_CSS` in `js/render.js` + `project-src/app.js`) consumes topbar/sidebar/footer/motion tokens. | **DONE** |
+| **2 — Theme CSS consumption** | `themes/minimal/assets/style.css`, `themes/_starter/assets/style.css`, `js/scaffold.js` `starterCss` consume the new page/typography/link/block tokens (body size/lh/ls, content-gap, h1–h3, small, links, quote/list/table/image/code/divider). All fallbacks equal today's look. | **DONE** |
+| **3 — Downloads + theme builder parity** | `Bloger.Generator.compilePack` and `Bloger.Scaffold.pack` already embed the full resolved design + `:root` block; verify a generated ZIP's `config.js`/`themes/<id>.js` carry the new scopes and that `new-theme.html` saved themes round-trip. | Next |
+| **4 — Data tokens → real layout/decoration** | Wire the `cssVar:null` tokens (`page.arrangement`, `page.pageDecoration`, `topbar.sticky`, `topbar.shadow`) into the shell/theme CSS (arrangement toggles sidebar, decorations add frame/shadow/pattern, etc.). | Later |
+| **5 — Remaining spec gaps** | `--be-page-bg-image`, `--be-mono-font`, link `-underline-thickness` name alignment, dark-mode `scheme` (Iteration 6 §9), and per-block `margin-bottom`. | Later |
+| **6 — Themes apply to every page** | `Bloger.Design.applyToPage`/`applyThemeToTool` + `TOOL_PALETTE`/`EDITOR_PALETTE`: Bloger tool pages (hub/generator/preview/theme-builder) inject the active theme's design tokens (palette/font/radius, layout kept); the downloaded editor (`edit.html`) adopts tokens via `applyEditorTheme`; `app.js` now injects the theme stylesheet **after** the shell CSS so a theme can restyle the whole adopter page (topbar/sidebar/footer), not just the article. | **DONE** |
+
+Iteration 7 (arrangements / decorations / animations / logic owned by theme packs) builds on the
+finished token surface — see the next section.
+
+---
+
+## Iteration 7 — beyond tokens: themes own arrangements, decorations, animations & logic
+
+### Principle
+
+Design tokens make common knobs easy, but they can never cover everything a customizer wants.
+Themes must be able to **own** structure (arrangements), visual flourish (decorations), motion
+(animations) and behaviour (logic) — not just recolor. So the pack contract grows from
+"tokens + content CSS" into a full **theme extension surface**:
+
+> tokens (knobs) + layout (structure) + shell CSS (chrome decoration) + assets (images/SVG) +
+> script hooks (behaviour)
+
+The runtime stays self-contained; everything a theme adds is compiled into its pack, so downloads
+keep working over `file://` and Pages with no build step.
+
+### 1. Arrangements (layout structure)
+
+- **Slot model.** The shell becomes composable slots — `topbar / sidebar / content / footer`. The
+  runtime renders slots; a theme can restyle or hide them via its shell CSS, and the manifest can
+  enable/disable slots per view.
+- **Layout presets.** New manifest field `layout: "default" | "centered" | "magazine" | "split" |
+  …` selects a runtime shell variant (where the topbar sits, whether/whence the sidebar appears,
+  footer width). The adopter-facing `arrangement` token (single-column / with-sidebar) stays as an
+  override *on top of* the preset.
+- **Fully custom layout.** A theme may ship its own `layout.html` with slot placeholders
+  (`{{slot:content}}`). If present, the runtime uses it instead of the default shell — full
+  structural freedom (custom header art, hero, grids, side rails).
+- **Responsive.** Each preset ships sensible media-query behaviour; theme shell CSS can override
+  per-breakpoint.
+
+### 2. Decorations (visual flourish)
+
+- **Shell stylesheet (`shellCss`).** The pack gains a theme-authored stylesheet for the
+  topbar/sidebar/footer, injected **after** the runtime shell CSS so the cascade lets a theme
+  restyle the chrome (borders, shadows, patterns, gradient headers, background art).
+- **Decoration assets.** Packs may embed images/SVG (data URIs or bundled files under `themes/`)
+  for patterns, flourishes and hero art, referenced from `shellCss`/`css`.
+- **Decoration tokens.** Add preset tokens such as `--be-page-decoration` (none / frame / soft
+  shadow / pattern), `--be-shadow-color`/`--be-shadow-blur`, `--be-hero-style` — "preset" knobs
+  that map to CSS classes/variables consumed by the theme or the shell.
+- **Content decorations.** The per-block border/background/shadow tokens from Iteration 6 let a
+  theme decorate the reading area itself.
+
+### 3. Animations (motion)
+
+- **Motion tokens** as a shared baseline: `--be-duration`, `--be-easing` (+ `prefers-reduced-
+  motion` handling) so theme CSS animates consistently and accessibly.
+- **View-transition hooks.** On `#/post/<id>` navigation the runtime re-renders content; it toggles
+  `body.be-switching` and adds `.be-view-enter` to the content so themes can fade/slide each view
+  in with pure CSS.
+- **Scroll / entrance effects.** Theme JS can use `IntersectionObserver` directly (or the runtime
+  helper `Blog.observe(el, onEnter)`); themes animate `.be-content` children on reveal.
+- **Decorative motion** (hover lift, gradient shift, card tilt) is theme CSS driven by the motion
+  tokens — no runtime change needed.
+
+### 4. Logic (behaviour)
+
+- **Theme script API** (on the runtime's global `Blog`):
+  - `Blog.onReady(fn)` / `Blog.onView(fn)` — hooks run after each render (home/post) and on load,
+    receiving the content container + current view + data, so themes can attach per-view behaviour:
+    lightbox, table-of-contents, reading progress, syntax highlighting, comments, "next/prev".
+  - `Blog.getData()` / `Blog.save(data)` — read/write the blog's site/posts/design so themes can
+    implement features such as search, tags, archives and stats.
+  - `Blog.els(sel)` — query helper scoped to the rendered app.
+- **Declarative features.** Manifest `features` (e.g. `{"lightbox": true, "readingProgress": false}`)
+  renders as checkboxes in the editor and becomes runtime config for `theme.js` — adopters can turn
+  a theme's logic on/off without editing code.
+- **Sandbox note.** `theme.js` is bundled into the self-contained pack and runs in the adopter's
+  page; it must stay dependency-free (or carry its own deps inside the pack).
+
+### 5. Pack contract (concrete)
+
+The compiled pack object grows to:
+
+```js
+{
+  id, name,
+  css,                 // content stylesheet (have)
+  homeTemplate, postTemplate,   // content-only templates (have)
+  layout,              // preset id                 (new)
+  layoutHtml,          // optional custom shell with {{slot:content}} (new)
+  shellCss,            // theme chrome stylesheet   (new)
+  assets,              // { name: dataURI } decoration assets (new)
+  features,            // manifest themeOptions     (new)
+  js,                  // theme behaviour using Blog hooks (new API)
+  design, designCss    // design tokens (have)
+}
+```
+
+- **Compilers** (`js/generator.js`, `js/scaffold.js`) fetch the new files (`layout.html`,
+  `shell.css`, `assets/`, `theme.js`) and embed them in the pack; `js/design.js` adds the
+  decoration/motion tokens; `js/render.js` previews mirror the new runtime.
+- **Runtime** (`project-src/app.js`) renders slots from `layout`/`layoutHtml`, injects `shellCss`
+  after the runtime shell CSS, calls the theme's `onReady`/`onView` hooks, and honours
+  `prefers-reduced-motion`.
+- **Backward compatible:** packs without the new fields keep today's default shell/layout, so
+  `minimal` and existing themes are unchanged.
+
+### 6. Build order
+
+1. Slot-based shell + `layout` presets + manifest field.
+2. `shellCss` + decoration assets in the pack.
+3. Motion tokens + view-transition classes + reduced-motion.
+4. Theme script API (`onReady`/`onView`, data access) + `features` editor toggles.
+5. Docs (`docs/THEME-SPEC.md`) + a second richer sample theme demonstrating all four capabilities.
+
 ## TL;DR
 
 Build **Bloger** as a purely static (no-build) web tool: a hub page (`index.html`) that
