@@ -1,0 +1,81 @@
+/* ============================================================
+   Minimal — pure black, grey and white.
+   No border radius. No decoration. Just the essentials.
+   ============================================================
+   Layout note: the Bloger runtime provides the topbar, the
+   foldable sidebar and the footer. This stylesheet only styles
+   the content (hero + posts). It reads design tokens (--be-*)
+   so adopters can customize colors, fonts and corner radius.
+   ============================================================ */
+
+:root {
+  --fg: var(--be-text, #111111);
+  --muted: var(--be-muted, #6b6b6b);
+  --line: var(--be-border, #e0e0e0);
+  --soft: #f4f4f4;
+  --radius: var(--be-corner-radius, 0px);
+  --body-font: var(--be-body-font, system-ui);
+}
+
+body {
+  background: var(--be-page-bg, #ffffff);
+  color: var(--fg);
+  font: 16px/1.7 var(--body-font), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--fg); }
+
+/* ---------- hero (empty-state home) ---------- */
+.be-hero { padding: 24px 0 8px; }
+.be-hero-title { font-size: 32px; line-height: 1.25; letter-spacing: -0.02em; margin: 0 0 8px; }
+.be-hero-sub { color: var(--muted); font-size: 18px; margin: 0 0 12px; }
+.be-hero-bio { color: var(--muted); font-size: 15px; margin: 0 0 20px; max-width: 46em; }
+.be-hero-cta a { font-size: 15px; text-decoration: underline; }
+
+/* ---------- single post ---------- */
+.post { padding: 8px 0 0; }
+.post-title { font-size: 30px; line-height: 1.25; letter-spacing: -0.02em; margin: 0; }
+.post-date { display: inline-block; color: var(--muted); font-size: 13px; margin-top: 8px; }
+.post-head { border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 26px; }
+.post-body > * + * { margin-top: 18px; }
+
+/* block-type-specific design tokens */
+.post-body h2 { font-size: var(--be-heading-size, 22px); line-height: var(--be-heading-lh, 1.3); font-weight: var(--be-heading-weight, 700); color: var(--be-heading-color, var(--fg)); margin-top: 34px; }
+.post-body h3 { font-size: calc(var(--be-heading-size, 22px) * 0.86); line-height: var(--be-heading-lh, 1.3); font-weight: var(--be-heading-weight, 700); color: var(--be-heading-color, var(--fg)); margin-top: 28px; }
+.post-body p { font-size: var(--be-para-size, 16px); line-height: var(--be-para-lh, 1.7); color: var(--be-para-color, var(--fg)); }
+.post-body ul, .post-body ol { font-size: var(--be-list-size, 16px); line-height: var(--be-list-lh, 1.7); padding-left: 1.4em; }
+.post-body li { margin: 2px 0; }
+.post-body a { color: var(--fg); text-decoration: underline; }
+.post-body blockquote {
+  border-left: 3px solid var(--fg);
+  padding-left: 16px;
+  color: var(--be-quote-color, var(--muted));
+  font-style: italic;
+  font-size: var(--be-quote-size, 16px);
+  line-height: var(--be-quote-lh, 1.7);
+}
+.post-body code {
+  background: var(--soft);
+  padding: 2px 5px;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+}
+.post-body img { max-width: 100%; height: auto; display: block; border-radius: var(--be-image-radius, var(--radius)); }
+.post-body .post-figure { margin: 0; }
+.post-body figcaption { color: var(--muted); font-size: 13px; margin-top: 6px; }
+
+.post-body table { border-collapse: collapse; width: 100%; font-size: var(--be-table-size, 14px); line-height: var(--be-table-lh, 1.5); }
+.post-body td, .post-body th { border: 1px solid var(--line); padding: 8px 10px; text-align: left; }
+.post-body .table-wrap { overflow-x: auto; }
+.post-body pre {
+  background: var(--soft);
+  padding: 14px;
+  overflow-x: auto;
+  border-radius: var(--radius);
+  font-family: var(--be-code-font, ui-monospace, SFMono-Regular, Consolas, Menlo, monospace);
+  font-size: var(--be-code-size, 13px);
+  line-height: var(--be-code-lh, 1.6);
+}
+.post-body pre code { background: none; padding: 0; font-size: inherit; }
+.post-body hr.post-divider { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }

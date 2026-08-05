@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview — Bloger</title>
+  <link rel="stylesheet" href="css/tool.css">
+  <style>
+    .preview-frame {
+      width: 100%;
+      height: calc(100vh - 160px);
+      border: 1px solid var(--tool-line);
+      background: #fff;
+    }
+    .preview-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .preview-bar-left { display: flex; align-items: center; gap: 12px; }
+    .view-toggle { display: flex; }
+    .view-toggle .btn { border-right: 0; }
+    .view-toggle .btn.active { background: var(--tool-ink); color: #fff; }
+  </style>
+</head>
+<body>
+  <header id="bloger-toolbar" class="toolbar"></header>
+
+  <main class="page page-narrow">
+    <div class="preview-bar">
+      <div class="preview-bar-left">
+        <a class="btn btn-sm btn-ghost" href="index.html">&larr; Back</a>
+        <h1 class="page-title" style="margin:0;font-size:20px" id="theme-name">Preview</h1>
+      </div>
+      <div class="preview-bar-left">
+        <div class="view-toggle" id="view-toggle">
+          <button class="btn btn-ghost btn-sm active" data-view="index">Index</button>
+          <button class="btn btn-ghost btn-sm" data-view="post">Post</button>
+        </div>
+        <button class="btn btn-sm btn-ghost" id="open-new-tab">Open in new tab</button>
+      </div>
+    </div>
+    <div id="preview-error" class="msg err hidden"></div>
+    <iframe id="preview-frame" class="preview-frame" title="Theme preview"></iframe>
+  </main>
+
+  <script src="js/theme.js"></script>
+  <script src="js/design.js"></script>
+  <script src="js/registry.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/preview.js"></script>
+</body>
+</html>

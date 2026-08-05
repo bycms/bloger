@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build a theme — Bloger</title>
+  <link rel="stylesheet" href="css/tool.css">
+  <style>
+    .gen-layout { display: grid; grid-template-columns: minmax(0,1fr) 46%; }
+    .gen-main { padding: 0 24px 40px 0; min-width: 0; }
+    .gen-preview { border-left: 1px solid var(--tool-line); position: sticky; top: 62px; align-self: start; background: #fff; }
+    .gen-preview iframe { width: 100%; height: calc(100vh - 150px); border: 0; display: block; }
+    .design-page { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 16px; }
+    .design-page .field { margin-bottom: 14px; }
+    .design-block { border: 1px solid var(--tool-line); background: var(--tool-panel); margin-bottom: 10px; }
+    .design-block summary { cursor: pointer; padding: 10px 14px; font-weight: 600; font-size: 14px; list-style: none; display: flex; align-items: center; justify-content: space-between; }
+    .design-block summary::-webkit-details-marker { display: none; }
+    .design-block summary::after { content: "+"; color: var(--tool-muted); }
+    .design-block[open] summary::after { content: "–"; }
+    .design-block .design-block-body { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 16px; padding: 4px 14px 14px; }
+    .design-block .field { margin-bottom: 12px; }
+    .saved-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--tool-line); background: var(--tool-panel); margin-bottom: 8px; }
+    .saved-info { flex: 1; min-width: 0; }
+    .saved-name { font-weight: 600; }
+    .saved-id { color: var(--tool-muted); font-size: 12px; margin-left: 8px; }
+    .saved-actions { display: flex; gap: 8px; }
+    .empty { color: var(--tool-muted); font-size: 13px; }
+    .notice { font-size: 12px; color: var(--tool-muted); margin: 4px 0 8px; }
+    @media (max-width: 1000px) { .design-page, .design-block .design-block-body { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 900px) { .gen-layout { grid-template-columns: 1fr; } .gen-preview { display: none; } .design-page, .design-block .design-block-body { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header id="bloger-toolbar" class="toolbar"></header>
+
+  <main class="page" style="max-width:1200px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;flex-wrap:wrap">
+      <a class="btn btn-sm btn-ghost" href="index.html">&larr; Back</a>
+      <h1 class="page-title" style="margin:0;font-size:24px">Build a theme</h1>
+    </div>
+    <p class="page-sub">
+      Generate a theme here, preview it live, save it to this site's storage, and download it as a
+      ready-to-install theme pack. The pack drops straight into a blog folder's
+      <span class="mono">themes/</span> — the folder itself never needs a theme generator.
+    </p>
+
+    <div id="builder-error" class="msg err hidden"></div>
+
+    <div class="gen-layout">
+      <div class="gen-main">
+        <h2 class="section-title">Theme</h2>
+        <div class="grid-2">
+          <div class="field"><label for="theme-id">Theme id (pack name)</label><input type="text" id="theme-id" value="my-theme" placeholder="my-theme"></div>
+          <div class="field"><label for="theme-name">Display name</label><input type="text" id="theme-name" value="My Theme" placeholder="My Theme"></div>
+        </div>
+
+        <h2 class="section-title">Design tokens</h2>
+        <p class="notice">
+          These become the theme pack's defaults (CSS custom properties <code>--be-*</code>).
+          Adopters can still override them in the generator.
+        </p>
+        <div id="design-panel"></div>
+
+        <h2 class="section-title">Actions</h2>
+        <div class="gen-actions" style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" id="save-btn">Save to my themes</button>
+          <button class="btn btn-ghost" id="download-btn">Download theme pack</button>
+        </div>
+        <div id="status" class="msg hidden" style="margin-top:14px"></div>
+
+        <h2 class="section-title">My saved themes</h2>
+        <p class="notice">Saved in this site's localStorage — they are not lost on refresh.</p>
+        <div id="saved-list"></div>
+      </div>
+
+      <aside class="gen-preview">
+        <div style="padding:8px 12px;border-bottom:1px solid var(--tool-line);font-size:12px;color:var(--tool-muted)">
+          Live preview — how the pack renders a blog (topbar + foldable sidebar + content)
+        </div>
+        <iframe id="preview-frame" title="Theme preview"></iframe>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="tool-footer">
+    <span>© Bloger</span>
+    <span>Downloaded packs: copy into your folder's themes/ and register in themes/index.js.</span>
+  </footer>
+
+  <script src="lib/jszip.min.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/design.js"></script>
+  <script src="js/registry.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/scaffold.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/theme-builder.js"></script>
+</body>
+</html>

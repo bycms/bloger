@@ -1,0 +1,150 @@
+/* ============================================================
+ * Bloger block editor styles — clean, Word-like.
+ * Blocks are NOT wrapped in boxes; only a subtle hover toolbar
+ * appears beside the focused row.
+ * ============================================================ */
+
+.be-root {
+  position: relative;
+}
+
+/* ----- rows: no boxes, generous spacing ----- */
+.be-row {
+  position: relative;
+  padding: 2px 0;
+  margin: 2px 0;
+}
+.be-row:hover { background: rgba(0, 0, 0, 0.02); }
+
+/* ----- contenteditable text ----- */
+.be-content {
+  min-height: 1.6em;
+  outline: none;
+  padding: 4px 2px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #1a1a1a;
+  border: 1px solid transparent;
+}
+.be-content:focus { border-color: transparent; }
+.be-paragraph .be-content { font-size: 15px; }
+.be-heading .be-content { font-weight: 700; }
+.be-heading[data-level="1"] .be-content { font-size: 26px; line-height: 1.3; }
+.be-heading[data-level="2"] .be-content { font-size: 22px; line-height: 1.3; }
+.be-heading[data-level="3"] .be-content { font-size: 18px; }
+.be-quote .be-content {
+  font-style: italic;
+  color: #555;
+  border-left: 3px solid #bbb;
+  padding-left: 12px;
+}
+.be-code .be-content {
+  font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+  font-size: 13px;
+  background: #f4f4f4;
+  padding: 10px 12px;
+  white-space: pre-wrap;
+  min-height: 2.5em;
+}
+.be-code .be-content:focus { outline: 1px solid #ccc; }
+
+/* ----- hover toolbar (up/down/delete) ----- */
+.be-bar {
+  position: absolute;
+  right: 100%;
+  top: 6px;
+  display: none;
+  gap: 2px;
+  padding-right: 6px;
+  white-space: nowrap;
+}
+.be-row:hover .be-bar, .be-row:focus-within .be-bar { display: inline-flex; }
+.be-tool {
+  background: #fff;
+  border: 1px solid #ddd;
+  color: #555;
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+.be-tool:hover { background: #eee; color: #111; }
+.be-del:hover { color: #b54708; border-color: #b54708; }
+
+/* ----- list block ----- */
+.be-list { padding-left: 6px; }
+.be-list-item {
+  outline: none;
+  min-height: 1.6em;
+  padding: 3px 2px;
+  position: relative;
+  margin-left: 18px;
+}
+.be-list-item::before {
+  position: absolute;
+  left: -18px;
+  content: "•";
+  color: #888;
+}
+.be-list[data-ordered="1"] .be-list-item::before { content: none; }
+.be-list-item:focus { border-color: transparent; }
+
+/* ----- table ----- */
+.be-table-wrap { overflow-x: auto; }
+.be-table { border-collapse: collapse; width: 100%; margin: 4px 0; }
+.be-cell {
+  border: 1px solid #ddd;
+  min-width: 80px;
+  padding: 6px 8px;
+  font-size: 14px;
+  outline: none;
+}
+.be-cell:focus { background: #f7f7f7; }
+.be-table-tools { display: flex; gap: 6px; margin: 2px 0 6px; }
+
+/* ----- image ----- */
+.be-img-url, .be-img-caption {
+  display: block;
+  width: 100%;
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  font-size: 14px;
+  margin: 3px 0;
+  box-sizing: border-box;
+}
+.be-img-url:focus, .be-img-caption:focus { outline: none; border-color: #888; }
+.be-img-preview img { max-width: 100%; max-height: 320px; display: block; margin: 6px 0; }
+
+/* ----- divider ----- */
+.be-divider {
+  border-top: 2px solid #ccc;
+  margin: 14px 0;
+}
+
+/* ----- slash menu ----- */
+.be-slash {
+  position: fixed;
+  z-index: 9999;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  max-height: 320px;
+  overflow-y: auto;
+  width: 260px;
+  padding: 6px;
+}
+.be-slash-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  background: none;
+  border: 0;
+  padding: 8px 10px;
+  text-align: left;
+  cursor: pointer;
+}
+.be-slash-item:hover { background: #f2f2f2; }
+.be-slash-label { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+.be-slash-hint { font-size: 12px; color: #888; }

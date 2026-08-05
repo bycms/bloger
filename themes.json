@@ -1,0 +1,12 @@
+{
+  "bloger": "1.0.0",
+  "themes": [
+    {
+      "id": "minimal",
+      "name": "Minimal",
+      "description": "Pure black, grey and white. No border radius, no decoration — just the essentials.",
+      "version": "1.0.0",
+      "author": "Bloger"
+    }
+  ]
+}

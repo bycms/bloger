@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit blog</title>
+  <link rel="stylesheet" href="editor.css">
+  <style>
+    :root { --line:#e4e4e0; --ink:#1a1a1a; --muted:#777; --panel:#fff; --soft:#f6f6f4; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--soft); }
+    .edit-topbar { position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 18px; background:var(--panel); border-bottom:1px solid var(--line); }
+    .edit-brand { font-weight:700; }
+    .edit-status { color:var(--muted); font-size:12px; }
+    .edit-actions { display:flex; align-items:center; gap:8px; }
+    .edit-actions select, .edit-actions button { font:inherit; padding:7px 10px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+    .edit-actions button.primary { background:#111; color:#fff; border-color:#111; }
+    .edit-layout { display:grid; grid-template-columns: minmax(0,1fr) 46%; min-height:calc(100vh - 54px); }
+    .edit-main { padding:20px 24px 60px; overflow-y:auto; }
+    .edit-preview { border-left:1px solid var(--line); background:#fff; position:sticky; top:54px; height:calc(100vh - 54px); }
+    .edit-preview iframe { width:100%; height:100%; border:0; }
+    .section-title { font-size:15px; letter-spacing:.02em; margin:22px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line); }
+    .field { margin-bottom:14px; }
+    .field label { display:block; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:4px; }
+    .field input[type=text], .field input[type=color] { width:100%; border:1px solid var(--line); padding:8px 10px; font:inherit; }
+    .field input[type=color] { width:56px; height:38px; padding:3px; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .post-card { border:1px solid var(--line); background:#fff; margin-bottom:16px; }
+    .post-card-head { display:flex; gap:8px; padding:10px 12px; background:var(--soft); border-bottom:1px solid var(--line); }
+    .post-card-head input { flex:1; border:1px solid var(--line); padding:6px 8px; font:inherit; }
+    .post-card-head input.date { flex:0 0 140px; }
+    .post-card-body { padding:8px 12px 12px; }
+    .post-card-tools { display:flex; gap:8px; padding:0 12px 12px; }
+    .btn { display:inline-block; border:1px solid var(--line); background:#fff; padding:7px 12px; font:inherit; cursor:pointer; text-decoration:none; color:var(--ink); }
+    .btn:hover { border-color:#111; }
+    .btn-danger { color:#b54708; }
+    .empty { color:var(--muted); font-size:13px; }
+    .notice { font-size:12px; color:var(--muted); margin:4px 0 8px; }
+    @media (max-width:900px) { .edit-layout { grid-template-columns:1fr; } .edit-preview { display:none; } }
+  </style>
+</head>
+<body>
+  <header class="edit-topbar">
+    <span class="edit-brand">✎ Blog editor</span>
+    <span class="edit-status" id="save-status"></span>
+    <div class="edit-actions">
+      <label for="theme-select" class="muted">Theme:</label>
+      <select id="theme-select"></select>
+      <button id="btn-save" class="primary">Save</button>
+      <a class="btn" href="index.html" target="_blank">View blog</a>
+    </div>
+  </header>
+
+  <div class="edit-layout">
+    <main class="edit-main">
+      <h1 class="section-title" style="margin-top:0">Site</h1>
+      <div class="grid2">
+        <div class="field"><label for="f-title">Title</label><input type="text" id="f-title"></div>
+        <div class="field"><label for="f-subtitle">Tagline / subtitle</label><input type="text" id="f-subtitle"></div>
+        <div class="field"><label for="f-bio">Bio</label><input type="text" id="f-bio"></div>
+        <div class="field"><label for="f-accent">Accent color</label><input type="color" id="f-accent" value="#111111"></div>
+      </div>
+
+      <h1 class="section-title">Posts</h1>
+      <p class="notice">Each post is made of blocks. Type <code>/</code> to insert a block, or use Markdown: <code># heading</code>, <code>- list</code>, <code>1. list</code>, <code>&gt; quote</code>, <code>```</code> code, <code>---</code> divider, <code>![alt](url)</code> image.</p>
+      <div id="posts"></div>
+      <button class="btn" id="btn-add-post">+ Add post</button>
+    </main>
+
+    <aside class="edit-preview">
+      <iframe id="preview-frame" title="Live preview"></iframe>
+    </aside>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="themes/index.js"></script>
+  <script src="app.js"></script>
+  <script src="editor.js"></script>
+  <script src="edit-app.js"></script>
+</body>
+</html>
