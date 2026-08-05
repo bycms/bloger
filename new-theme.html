@@ -10,14 +10,14 @@
     .gen-main { padding: 0 24px 40px 0; min-width: 0; }
     .gen-preview { border-left: 1px solid var(--tool-line); position: sticky; top: 62px; align-self: start; background: #fff; }
     .gen-preview iframe { width: 100%; height: calc(100vh - 150px); border: 0; display: block; }
-    .design-page { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 16px; }
+    .design-page { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 16px; }
     .design-page .field { margin-bottom: 14px; }
     .design-block { border: 1px solid var(--tool-line); background: var(--tool-panel); margin-bottom: 10px; }
     .design-block summary { cursor: pointer; padding: 10px 14px; font-weight: 600; font-size: 14px; list-style: none; display: flex; align-items: center; justify-content: space-between; }
     .design-block summary::-webkit-details-marker { display: none; }
     .design-block summary::after { content: "+"; color: var(--tool-muted); }
     .design-block[open] summary::after { content: "–"; }
-    .design-block .design-block-body { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 16px; padding: 4px 14px 14px; }
+    .design-block .design-block-body { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 16px; padding: 4px 14px 14px; }
     .design-block .field { margin-bottom: 12px; }
     .saved-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--tool-line); background: var(--tool-panel); margin-bottom: 8px; }
     .saved-info { flex: 1; min-width: 0; }
@@ -26,8 +26,10 @@
     .saved-actions { display: flex; gap: 8px; }
     .empty { color: var(--tool-muted); font-size: 13px; }
     .notice { font-size: 12px; color: var(--tool-muted); margin: 4px 0 8px; }
-    @media (max-width: 1000px) { .design-page, .design-block .design-block-body { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 900px) { .gen-layout { grid-template-columns: 1fr; } .gen-preview { display: none; } .design-page, .design-block .design-block-body { grid-template-columns: 1fr; } }
+    @media (max-width: 1200px) { .gen-layout { grid-template-columns: 1fr; } .gen-preview { display: none; } .design-page, .design-block .design-block-body { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 800px) { .design-page, .design-block .design-block-body { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 650px) { .design-page, .design-block .design-block-body { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .design-page, .design-block .design-block-body { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -39,9 +41,8 @@
       <h1 class="page-title" style="margin:0;font-size:24px">Build a theme</h1>
     </div>
     <p class="page-sub">
-      Generate a theme here, preview it live, save it to this site's storage, and download it as a
-      ready-to-install theme pack. The pack drops straight into a blog folder's
-      <span class="mono">themes/</span> — the folder itself never needs a theme generator.
+      Generate a theme, preview live (on desktop), save and download as a
+      ready-to-install theme pack.
     </p>
 
     <div id="builder-error" class="msg err hidden"></div>
@@ -75,7 +76,7 @@
 
       <aside class="gen-preview">
         <div style="padding:8px 12px;border-bottom:1px solid var(--tool-line);font-size:12px;color:var(--tool-muted)">
-          Live preview — how the pack renders a blog (topbar + foldable sidebar + content)
+          Live preview
         </div>
         <iframe id="preview-frame" title="Theme preview"></iframe>
       </aside>

@@ -71,7 +71,7 @@
       "background:var(--be-topbar-bg,var(--be-page-bg,#fff));border-bottom:1px solid var(--be-topbar-border,var(--be-border,#e0e0e0));" +
       "font-family:var(--be-topbar-font,var(--be-body-font,system-ui));}" +
     ".be-toggle{background:none;border:1px solid var(--be-topbar-border,var(--be-border,#e0e0e0));color:var(--be-topbar-fg,var(--be-text,#111));" +
-      "font-size:15px;line-height:1;width:32px;height:32px;cursor:pointer;border-radius:var(--be-toggle-radius,var(--be-corner-radius,0));}" +
+      "font-size:15px;line-height:1;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;border-radius:var(--be-toggle-radius,var(--be-corner-radius,0));}" +
     ".be-site-title{font-weight:var(--be-topbar-title-weight,700);color:var(--be-topbar-fg,var(--be-text,#111));text-decoration:none;font-size:var(--be-topbar-title-size,17px);}" +
     ".be-topbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px;}" +
     ".be-edit-link{color:var(--be-muted,#666);font-size:13px;text-decoration:none;}" +
@@ -84,7 +84,7 @@
     ".be-sidebar-head{font-size:var(--be-sidebar-head-size,11px);text-transform:uppercase;letter-spacing:.06em;color:var(--be-muted,#666);padding:2px 8px 10px;}" +
     ".be-sidebar-nav{display:flex;flex-direction:column;gap:var(--be-sidebar-gap,2px);}" +
     ".be-sidebar-item{display:block;text-decoration:none;color:var(--be-sidebar-fg,var(--be-text,#111));padding:var(--be-sidebar-item-padding,8px 10px);" +
-      "border-left:2px solid transparent;border-radius:var(--be-sidebar-item-radius,0);" +
+      "border-left:2px solid transparent;border-radius:var(--be-sidebar-item-radius,var(--be-corner-radius,0));" +
       "transition:background var(--be-duration,.18s) var(--be-easing,ease),color var(--be-duration,.18s) var(--be-easing,ease);}" +
     ".be-sidebar-item:hover{background:var(--be-sidebar-hover-bg,rgba(0,0,0,.04));}" +
     ".be-sidebar-item.active{border-left-color:var(--be-sidebar-active-bar,var(--be-accent,#111));background:var(--be-sidebar-active-bg,rgba(0,0,0,.05));}" +

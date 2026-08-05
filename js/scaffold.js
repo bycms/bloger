@@ -66,11 +66,25 @@ Bloger.Scaffold = {
       '::selection { background: var(--be-selection-bg, #000000); color: var(--be-selection-fg, #ffffff); }\n' +
       'a { color: var(--be-link-color, var(--fg)); text-decoration: var(--be-link-underline, underline); text-decoration-thickness: var(--be-link-thickness, 1px); }\n' +
       'a:hover { color: var(--be-link-hover-color, var(--fg)); }\n' +
+      'a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--be-focus-ring, #111111); outline-offset: 2px; }\n' +
+      '/* ---------- controls: buttons, inputs, selects ---------- */\n' +
+      'button, input, select, textarea { font-family: var(--be-body-font, inherit); font-size: var(--be-body-size, 16px); line-height: 1.5; color: var(--be-text, #111111); background: var(--be-page-bg, #ffffff); border: 1px solid var(--be-border, #e0e0e0); border-radius: var(--be-corner-radius, 0px); padding: 8px 12px; transition: background var(--be-duration, .18s) var(--be-easing, ease), color var(--be-duration, .18s) var(--be-easing, ease), border-color var(--be-duration, .18s) var(--be-easing, ease); }\n' +
+      'button { cursor: pointer; }\n' +
+      'button:hover, input:hover, select:hover, textarea:hover { border-color: var(--be-muted, #6b6b6b); }\n' +
+      'button.primary, .btn { background: var(--be-accent, #111111); border-color: var(--be-accent, #111111); color: #ffffff; }\n' +
+      'button.primary:hover, .btn:hover { opacity: .88; border-color: var(--be-accent, #111111); }\n' +
+      '/* shell chrome controls (topbar toggle + Edit) */\n' +
+      '.be-toggle { display: flex; align-items: center; justify-content: center; padding: 0; background: var(--be-page-bg, #ffffff); color: var(--be-text, #111111); border: 1px solid var(--be-border, #e0e0e0); border-radius: var(--be-toggle-radius, var(--be-corner-radius, 0px)); }\n' +
+      '.be-toggle:hover { color: var(--be-accent, #111111); border-color: var(--be-muted, #6b6b6b); }\n' +
+      '.be-edit-link { display: inline-flex; align-items: center; justify-content: center; background: var(--be-page-bg, #ffffff); color: var(--be-text, #111111); border: 1px solid var(--be-border, #e0e0e0); border-radius: var(--be-corner-radius, 0px); padding: 6px 12px; font-size: 13px; text-decoration: none; transition: color var(--be-duration, .18s) var(--be-easing, ease), border-color var(--be-duration, .18s) var(--be-easing, ease); }\n' +
+      '.be-edit-link:hover { color: var(--be-accent, #111111); border-color: var(--be-muted, #6b6b6b); text-decoration: none; }\n' +
       '.be-hero { padding: 24px 0 8px; }\n' +
       '.be-hero-title { font-family: var(--be-h1-font, inherit); font-size: var(--be-h1-size, 30px); line-height: var(--be-h1-lh, 1.25); font-weight: var(--be-h1-weight, 700); letter-spacing: var(--be-h1-ls, -0.02em); color: var(--be-h1-color, var(--fg)); margin: 0 0 8px; }\n' +
       '.be-hero-sub { color: var(--muted); font-size: 18px; margin: 0 0 12px; }\n' +
       '.be-hero-bio { color: var(--muted); font-size: 15px; margin: 0 0 20px; }\n' +
-      '.be-hero-cta a { font-size: 15px; }\n' +
+      '.be-hero-cta { margin: 24px 0 8px; }\n' +
+      '.be-hero-cta a { display: inline-block; background: var(--be-accent, #111111); color: #ffffff; border: 1px solid var(--be-accent, #111111); border-radius: var(--be-corner-radius, 0px); padding: 10px 18px; font-size: 15px; text-decoration: none; transition: opacity var(--be-duration, .18s) var(--be-easing, ease); }\n' +
+      '.be-hero-cta a:hover { opacity: .88; color: #ffffff; }\n' +
       '.post-title { font-family: var(--be-h1-font, inherit); font-size: var(--be-h1-size, 28px); line-height: var(--be-h1-lh, 1.25); font-weight: var(--be-h1-weight, 700); letter-spacing: var(--be-h1-ls, -0.02em); color: var(--be-h1-color, var(--fg)); margin: 0; }\n' +
       '.post-date { display: inline-block; color: var(--be-small-color, var(--muted)); font-size: var(--be-small-size, 13px); margin-top: 8px; }\n' +
       '.post-head { border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 26px; }\n' +

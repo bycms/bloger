@@ -65,22 +65,6 @@ var Bloger = window.Bloger || {};
     });
   }
 
-  /* ---------- design tokens panel ---------- */
-
-  // Adopt the theme's design tokens on the Bloger page itself (tokens only,
-  // the tool keeps its layout but picks up the theme's palette/font/radius).
-  function applyToolTheme() {
-    if (Bloger.Design && Bloger.Design.applyToPage) {
-      Bloger.Design.applyToPage(data.design, Bloger.Design.TOOL_PALETTE);
-    }
-  }
-
-  function renderDesignPanel() {
-    var panel = document.getElementById("design-panel");
-    if (!panel) return;
-    Bloger.Design.renderPanel(panel, data.design, function () { queuePreview(); applyToolTheme(); });
-  }
-
   /* ---------- posts editor ---------- */
 
   function postCard(post, index) {
@@ -257,9 +241,7 @@ var Bloger = window.Bloger || {};
       ? Bloger.Design.merge(manifest.design, null)
       : { page: {}, blocks: {} };
 
-    applyToolTheme();
     bindSite();
-    renderDesignPanel();
     renderPosts();
     loadPack();
 
@@ -270,8 +252,6 @@ var Bloger = window.Bloger || {};
       data.posts = Bloger.Generator.samplePosts();
       data.design = Bloger.Design ? Bloger.Design.merge(manifest.design, null) : { page: {}, blocks: {} };
       bindSite();
-      renderDesignPanel();
-      applyToolTheme();
       renderPosts();
       runPreview();
       showStatus("Reset to sample content.", true);

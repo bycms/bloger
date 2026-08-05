@@ -239,7 +239,7 @@ Bloger.Design.MOTION_TOKENS = {
  * ============================================================ */
 
 Bloger.Design.valueFor = function (def, value) {
-  if (value === undefined || value === null) value = def.default;
+  if (value === undefined || value === null || value === "") value = def.default;
   if (def.type === "number" && def.unit) return value + def.unit;
   return String(value);
 };
@@ -327,12 +327,24 @@ function eachToken(design, fn) {
   walk(Bloger.Design.MOTION_TOKENS, design.motion);
 }
 
+// A radius token is *inherited* from the global --be-corner-radius: when a
+// block / shell radius is still at its schema default we omit the declaration
+// so the CSS fallback chain (var(--be-…-radius, var(--be-corner-radius, 0)))
+// applies the page-level corner radius. The global token itself always emits.
+function isInheritedRadius(def, value) {
+  return !!def.cssVar &&
+         def.cssVar !== "--be-corner-radius" &&
+         /-radius$/i.test(def.cssVar) &&
+         String(value) === String(def.default);
+}
+
 // CSS custom property declarations for a resolved design object.
 Bloger.Design.cssVars = function (design) {
   design = design || Bloger.Design.defaults();
   var lines = [];
   eachToken(design, function (def, value) {
     if (!def.cssVar) return;
+    if (isInheritedRadius(def, value)) return;
     lines.push("  " + def.cssVar + ": " + Bloger.Design.valueFor(def, value) + ";");
   });
   return lines.join("\n");

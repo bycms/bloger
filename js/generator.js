@@ -62,18 +62,6 @@ Bloger.Generator = {
           { type: "quote", text: "Simplicity is the ultimate sophistication." },
           { type: "list", ordered: false, items: ["Fast to load", "Cheap to host", "Yours forever"] }
         ]
-      },
-      {
-        id: "why-static",
-        title: "Why a static blog still matters",
-        date: "2026-07-21",
-        blocks: [
-          { type: "heading", text: "Fast, portable, yours", level: 2 },
-          { type: "paragraph", text: "A static site is fast to load, cheap to host and easy to move. There is no database to maintain and nothing to break." },
-          { type: "paragraph", text: "You can publish anywhere that serves files: GitHub Pages, Netlify, or a folder on a server." },
-          { type: "image", url: "https://picsum.photos/seed/bloger/1200/600", caption: "A quiet corner of the web" },
-          { type: "code", text: "git push origin main", language: "bash" }
-        ]
       }
     ];
   },

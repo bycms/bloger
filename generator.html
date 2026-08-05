@@ -22,18 +22,6 @@
     .empty { color: var(--tool-muted); font-size: 13px; }
     .notice { font-size: 12px; color: var(--tool-muted); margin: 4px 0 8px; }
 
-    /* design token panel */
-    .design-page { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 16px; }
-    .design-page .field { margin-bottom: 14px; }
-    .design-block { border: 1px solid var(--tool-line); background: var(--tool-panel); margin-bottom: 10px; }
-    .design-block summary { cursor: pointer; padding: 10px 14px; font-weight: 600; font-size: 14px; list-style: none; display: flex; align-items: center; justify-content: space-between; }
-    .design-block summary::-webkit-details-marker { display: none; }
-    .design-block summary::after { content: "+"; color: var(--tool-muted); }
-    .design-block[open] summary::after { content: "–"; }
-    .design-block .design-block-body { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 16px; padding: 4px 14px 14px; }
-    .design-block .field { margin-bottom: 12px; }
-    @media (max-width: 1000px) { .design-page, .design-block .design-block-body { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 900px) { .design-page, .design-block .design-block-body { grid-template-columns: 1fr; } }
     @media (max-width: 900px) {
       .gen-layout { grid-template-columns: 1fr; }
       .gen-preview { display: none; }
@@ -62,14 +50,6 @@
           <div class="field"><label for="cfg-bio">Bio</label><input type="text" id="cfg-bio"></div>
           <div class="field"><label for="cfg-accent">Accent color</label><input type="color" id="cfg-accent" value="#111111"></div>
         </div>
-
-        <h2 class="section-title">Design tokens</h2>
-        <p class="notice">
-          Customize colors, corner radius, fonts and sizes per block type, plus the page layout.
-          Values map to CSS custom properties (<code>--be-*</code>) consumed by the theme. This is
-          the builder's extensible design-token system — more tokens can be added later.
-        </p>
-        <div id="design-panel"></div>
 
         <h2 class="section-title">Posts</h2>
         <p class="notice">
