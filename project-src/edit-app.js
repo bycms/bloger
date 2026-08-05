@@ -213,7 +213,7 @@
       "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>" +
       (Blog.SHELL_CSS || "") +
       "</style><style>" + designCss + "</style><style>" + css +
-      "</style></head><body>" + html + "</body></html>";
+      "</style></head><body class=\"be-collapsed\">" + html + "</body></html>";
     els.preview.srcdoc = doc;
   }
 
