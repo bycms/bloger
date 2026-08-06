@@ -168,7 +168,8 @@ Bloger.Scaffold = {
       postTemplate: Bloger.Scaffold.sanitize(Bloger.Scaffold.starterPostHtml()),
       js: Bloger.Scaffold.starterMainJs(),
       design: design,
-      designCss: Bloger.Design ? Bloger.Design.styleBlock(design) : ""
+      designCss: Bloger.Design ? Bloger.Design.styleBlock(design) : "",
+      darkDesignCss: Bloger.Design ? Bloger.Design.darkStyleBlock(design) : ""
     };
   },
 
@@ -249,7 +250,7 @@ Bloger.Scaffold = {
   },
 
   // A compiled pack from a resolved design (starter templates + design CSS).
-  packWithDesign: function (themeId, name, design) {
+  packWithDesign: function (themeId, name, design, accent) {
     return {
       id: themeId,
       name: name || themeId,
@@ -258,7 +259,8 @@ Bloger.Scaffold = {
       postTemplate: Bloger.Scaffold.sanitize(Bloger.Scaffold.starterPostHtml()),
       js: Bloger.Scaffold.starterMainJs(),
       design: design || {},
-      designCss: Bloger.Design ? Bloger.Design.styleBlock(design) : ""
+      designCss: Bloger.Design ? Bloger.Design.styleBlock(design) : "",
+      darkDesignCss: Bloger.Design ? Bloger.Design.darkStyleBlock(design, accent) : ""
     };
   },
 

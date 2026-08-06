@@ -24,7 +24,8 @@
     status: document.getElementById("save-status"),
     preview: document.getElementById("preview-frame"),
     addPost: document.getElementById("btn-add-post"),
-    save: document.getElementById("btn-save")
+    save: document.getElementById("btn-save"),
+    mode: document.getElementById("btn-mode")
   };
 
   // Forward the editor's own CSS vars to the active theme's design tokens so
@@ -34,7 +35,8 @@
     "--ink":   "--be-text",
     "--muted": "--be-muted",
     "--line":  "--be-border",
-    "--panel": "--be-page-bg"
+    "--panel": "--be-page-bg",
+    "--soft":  "--be-code-bg, #f6f6f4"
   };
 
   function applyEditorTheme() {
@@ -52,6 +54,7 @@
     });
     el.textContent =
       (theme.designCss || "") +
+      "\n" + (theme.darkDesignCss || "") +
       "\n:root {\n" + lines.join("\n") + "\n}" +
       "\nbody { font-family: var(--be-body-font, inherit); }" +
       "\nbody { position: relative; }" +
@@ -60,6 +63,42 @@
         " filter: blur(var(--be-page-bg-blur, 0px)); opacity: var(--be-page-bg-opacity, 1); }" +
       "\n.be-content { color: var(--be-text, #1a1a1a); }" +
       "\n.be-quote .be-content { color: var(--be-quote-color, #555); border-left-color: var(--be-quote-border, #bbb); }";
+  }
+
+  /* ---------------- colour mode (dark / light) ---------------- */
+
+  var MODE_KEY = "bloger:mode";
+
+  function systemPrefersDark() {
+    try { return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches; }
+    catch (e) { return false; }
+  }
+
+  function currentMode() {
+    var s = null;
+    try { s = localStorage.getItem(MODE_KEY); } catch (e) { /* ignore */ }
+    return s === "dark" || s === "light" ? s : (systemPrefersDark() ? "dark" : "light");
+  }
+
+  function setMode(mode) {
+    try { localStorage.setItem(MODE_KEY, mode); } catch (e) { /* ignore */ }
+    applyMode(mode);
+  }
+
+  // Reflect the colour mode on <html data-be-mode=…>, which activates the
+  // theme's dark design block (pack.darkDesignCss) — the editor chrome vars
+  // (--ink/--panel/…) are forwarded from --be-*, so they follow the mode too.
+  function applyMode(mode) {
+    var root = document.documentElement;
+    if (mode === "dark") root.setAttribute("data-be-mode", "dark");
+    else root.removeAttribute("data-be-mode");
+    var btn = document.getElementById("btn-mode");
+    if (btn) {
+      var toLight = mode === "dark";
+      btn.textContent = toLight ? "☀" : "☾";
+      btn.title = toLight ? "Switch to light mode" : "Switch to dark mode";
+      btn.setAttribute("aria-label", toLight ? "Switch to light mode" : "Switch to dark mode");
+    }
   }
 
   function slug(s) {
@@ -236,7 +275,11 @@
     var content = currentId
       ? Blog.renderPost(theme, data, currentId)
       : Blog.renderHome(theme, data);
-    var html = Blog.renderShell(data, content, currentId, theme.design);
+    // Content-only preview: show the rendered blog article (no topbar /
+    // sidebar / footer). `.be-content` + `.be-content-inner` (from SHELL_CSS)
+    // supply the reading surface — padding, page background and the centered
+    // max-width column.
+    var html = '<div class="be-content"><div class="be-content-inner">' + content + "</div></div>";
 
     var styleValues = {};
     Object.keys(data.site || {}).forEach(function (k) { styleValues[k] = data.site[k]; });
@@ -245,11 +288,27 @@
     var accent = (data.site && data.site.accent) || "#111111";
     var designCss = (theme.designCss || "") + "\n:root { --be-accent: " + accent + "; }";
 
+    // The preview mirrors the editor's colour mode: include the theme's dark
+    // design block and a tiny script that toggles data-be-mode on the preview
+    // document from the shared bloger:mode key (and updates live on change).
+    var modeScript = "(function(){var K='bloger:mode';" +
+      "function dark(){try{var v=localStorage.getItem(K);" +
+        "if(v==='dark')return true;if(v==='light')return false;" +
+        "return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;" +
+      "}catch(e){return false;}}" +
+      "function apply(){var r=document.documentElement;" +
+        "if(dark())r.setAttribute('data-be-mode','dark');else r.removeAttribute('data-be-mode');}" +
+      "apply();if(window.addEventListener){window.addEventListener('storage',function(e){if(e.key===K)apply();});}" +
+      "})();";
+
     var doc =
       "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>" +
       (Blog.SHELL_CSS || "") +
-      "</style><style>" + designCss + "</style><style>" + css +
-      "</style></head><body class=\"be-preview\">" + html + "</body></html>";
+      "</style><style>" + designCss + "</style>" +
+      (theme.darkDesignCss ? "<style>" + theme.darkDesignCss + "</style>" : "") +
+      "<style>" + css + "</style>" +
+      "<script>" + modeScript + "</scr" + "ipt>" +
+      "</head><body class=\"be-preview\">" + html + "</body></html>";
     els.preview.srcdoc = doc;
   }
 
@@ -283,5 +342,16 @@
     els.addPost.addEventListener("click", addPost);
     els.save.addEventListener("click", function () { readSite(); persist(true); });
     window.addEventListener("hashchange", preview);
+
+    // Colour-mode toggle (shared key with the blog page).
+    if (els.mode) {
+      els.mode.addEventListener("click", function () {
+        setMode(currentMode() === "dark" ? "light" : "dark");
+      });
+    }
+    applyMode(currentMode());
+    window.addEventListener("storage", function (e) {
+      if (e.key === MODE_KEY) applyMode(currentMode());
+    });
   });
 })();

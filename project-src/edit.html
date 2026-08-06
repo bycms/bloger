@@ -15,7 +15,7 @@
     .edit-actions { display:flex; align-items:center; gap:8px; }
     .edit-actions select, .edit-actions button { font:inherit; padding:7px 10px; border:1px solid var(--line); background:#fff; cursor:pointer; }
     .edit-actions button.primary { background:#111; color:#fff; border-color:#111; }
-    .edit-layout { display:grid; grid-template-columns: minmax(0,1fr) 46%; min-height:calc(100vh - 54px); }
+    .edit-layout { display:grid; grid-template-columns: minmax(0,1fr) minmax(0,54%); min-height:calc(100vh - 54px); }
     .edit-main { padding:20px 24px 60px; overflow-y:auto; }
     .edit-preview { border-left:1px solid var(--line); background:#fff; position:sticky; top:54px; height:calc(100vh - 54px); }
     .edit-preview iframe { width:100%; height:100%; border:0; }
@@ -37,6 +37,34 @@
     .empty { color:var(--muted); font-size:13px; }
     .notice { font-size:12px; color:var(--muted); margin:4px 0 8px; }
     @media (max-width:900px) { .edit-layout { grid-template-columns:1fr; } .edit-preview { display:none; } }
+
+    /* -------- dark mode (editor chrome + block editor) -------- */
+    /* --ink/--muted/--line/--panel/--soft are forwarded from the active
+       theme's design tokens (--be-*) by edit-app.js, so they flip to dark
+       automatically when data-be-mode="dark" is set on <html>. */
+    :root[data-be-mode="dark"] { color-scheme: dark; }
+    :root[data-be-mode="dark"] .edit-actions select,
+    :root[data-be-mode="dark"] .edit-actions button,
+    :root[data-be-mode="dark"] .btn { background: var(--panel); color: var(--ink); }
+    :root[data-be-mode="dark"] .edit-actions button.primary { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+    :root[data-be-mode="dark"] .post-card { background: var(--panel); }
+    :root[data-be-mode="dark"] .post-card-head { background: var(--soft); }
+    :root[data-be-mode="dark"] .post-card-head input { background: var(--panel); color: var(--ink); }
+    :root[data-be-mode="dark"] .be-content { color: var(--ink); }
+    :root[data-be-mode="dark"] .be-quote .be-content { color: var(--muted); border-left-color: var(--line); }
+    :root[data-be-mode="dark"] .be-code .be-content { background: var(--soft); color: var(--ink); }
+    :root[data-be-mode="dark"] .be-code .be-content:focus { outline-color: var(--line); }
+    :root[data-be-mode="dark"] .be-row:hover { background: rgba(255,255,255,.03); }
+    :root[data-be-mode="dark"] .be-tool { background: var(--panel); border-color: var(--line); color: var(--muted); }
+    :root[data-be-mode="dark"] .be-tool:hover { background: var(--soft); color: var(--ink); }
+    :root[data-be-mode="dark"] .be-cell { border-color: var(--line); color: var(--ink); }
+    :root[data-be-mode="dark"] .be-cell:focus { background: var(--soft); }
+    :root[data-be-mode="dark"] .be-img-url, :root[data-be-mode="dark"] .be-img-caption { border-color: var(--line); background: var(--panel); color: var(--ink); }
+    :root[data-be-mode="dark"] .be-divider { border-top-color: var(--line); }
+    :root[data-be-mode="dark"] .be-slash { background: var(--panel); border-color: var(--line); box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+    :root[data-be-mode="dark"] .be-slash-item:hover { background: var(--soft); }
+    :root[data-be-mode="dark"] .be-slash-label { color: var(--ink); }
+    :root[data-be-mode="dark"] .be-slash-hint { color: var(--muted); }
   </style>
 </head>
 <body>
@@ -46,6 +74,7 @@
     <div class="edit-actions">
       <label for="theme-select" class="muted">Theme:</label>
       <select id="theme-select"></select>
+      <button id="btn-mode" type="button" title="Toggle color mode" aria-label="Toggle color mode">☾</button>
       <button id="btn-save" class="primary">Save</button>
       <a class="btn" href="index.html" target="_blank">View blog</a>
     </div>

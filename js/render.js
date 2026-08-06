@@ -10,6 +10,7 @@
 var Bloger = window.Bloger || {};
 
 var SHELL_CSS =
+    "html,body{margin:0;padding:0;}" +
     ".be-topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;height:var(--be-topbar-height,52px);padding:0 16px;" +
       "background:var(--be-topbar-bg,var(--be-page-bg,#fff));border-bottom:1px solid var(--be-topbar-border,var(--be-border,#e0e0e0));" +
       "font-family:var(--be-topbar-font,var(--be-body-font,system-ui));}" +

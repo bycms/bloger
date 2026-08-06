@@ -67,6 +67,7 @@
   /* ---------------- shell styles (topbar + sidebar) ---------------- */
 
   var SHELL_CSS =
+    "html,body{margin:0;padding:0;}" +
     ".be-topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;height:var(--be-topbar-height,52px);padding:0 16px;" +
       "background:var(--be-topbar-bg,var(--be-page-bg,#fff));border-bottom:1px solid var(--be-topbar-border,var(--be-border,#e0e0e0));" +
       "font-family:var(--be-topbar-font,var(--be-body-font,system-ui));}" +
@@ -76,6 +77,10 @@
     ".be-topbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px;}" +
     ".be-edit-link{color:var(--be-muted,#666);font-size:13px;text-decoration:none;}" +
     ".be-edit-link:hover{color:var(--be-text,#111);text-decoration:underline;}" +
+    ".be-mode-toggle{background:none;border:1px solid var(--be-topbar-border,var(--be-border,#e0e0e0));color:var(--be-topbar-fg,var(--be-text,#111));" +
+      "font-size:14px;line-height:1;width:30px;height:30px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;" +
+      "border-radius:var(--be-toggle-radius,var(--be-corner-radius,0));}" +
+    ".be-mode-toggle:hover{color:var(--be-accent,#111);border-color:var(--be-muted,#666);}" +
     ".be-shell{display:flex;align-items:stretch;min-height:calc(100vh - 96px);}" +
     ".be-sidebar{width:var(--be-sidebar-width,262px);flex-shrink:0;border-right:1px solid var(--be-sidebar-border,var(--be-border,#e0e0e0));" +
       "background:var(--be-sidebar-bg,var(--be-page-bg,#fff));overflow-y:auto;padding:14px 8px;" +
@@ -345,6 +350,7 @@
         toggle +
         '<a class="be-site-title" href="#/">' + esc(title) + "</a>" +
         '<span class="be-topbar-actions">' +
+          '<button class="be-mode-toggle" id="be-mode-toggle" type="button" aria-label="Toggle color mode" title="Toggle color mode">☾</button>' +
           '<a class="be-edit-link" href="edit.html">Edit</a>' +
         "</span>" +
       "</header>" +
@@ -360,6 +366,57 @@
   }
 
   Blog.renderShell = renderShell;
+
+  /* ---------------- dark mode ---------------- */
+
+  var MODE_KEY = "bloger:mode";
+
+  function systemPrefersDark() {
+    try { return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches; }
+    catch (e) { return false; }
+  }
+
+  function currentMode() {
+    var s = null;
+    try { s = localStorage.getItem(MODE_KEY); } catch (e) { /* ignore */ }
+    return s === "dark" || s === "light" ? s : (systemPrefersDark() ? "dark" : "light");
+  }
+
+  function setMode(mode) {
+    try { localStorage.setItem(MODE_KEY, mode); } catch (e) { /* ignore */ }
+    applyMode(mode);
+  }
+
+  // Reflect the colour mode on <html data-be-mode=…>, which activates the
+  // theme's dark design block (pack.darkDesignCss), and keep the toggle icon
+  // in sync. Mirrors the Bloger tool's toggle behaviour.
+  function applyMode(mode) {
+    var root = document.documentElement;
+    if (mode === "dark") root.setAttribute("data-be-mode", "dark");
+    else root.removeAttribute("data-be-mode");
+    var btn = document.getElementById("be-mode-toggle");
+    if (btn) {
+      var toLight = mode === "dark";
+      btn.textContent = toLight ? "☀" : "☾";
+      btn.title = toLight ? "Switch to light mode" : "Switch to dark mode";
+      btn.setAttribute("aria-label", toLight ? "Switch to light mode" : "Switch to dark mode");
+    }
+  }
+
+  function wireModeToggle() {
+    var btn = document.getElementById("be-mode-toggle");
+    if (btn && !btn.getAttribute("data-bound")) {
+      btn.setAttribute("data-bound", "1");
+      btn.addEventListener("click", function () {
+        setMode(currentMode() === "dark" ? "light" : "dark");
+      });
+    }
+    if (window.addEventListener) {
+      window.addEventListener("storage", function (e) {
+        if (e.key === MODE_KEY) applyMode(currentMode());
+      });
+    }
+  }
 
   /* ---------------- boot / routing ---------------- */
 
@@ -434,6 +491,16 @@
       var accent = (data.site && data.site.accent) || "#111111";
       if (designEl) designEl.textContent = (theme.designCss || "") + "\n:root { --be-accent: " + accent + "; }";
 
+      // Dark design block: `:root[data-be-mode="dark"] { … }` baked into the
+      // pack. Activated by toggling data-be-mode on <html> (see applyMode).
+      var darkEl = document.getElementById("design-dark-style");
+      if (!darkEl) {
+        darkEl = document.createElement("style");
+        darkEl.id = "design-dark-style";
+        document.head.appendChild(darkEl);
+      }
+      if (darkEl) darkEl.textContent = theme.darkDesignCss || "";
+
       if (data.site && data.site.title) document.title = data.site.title;
 
       // Render shell + content.
@@ -452,6 +519,11 @@
           setCollapsed(collapsed);
         });
       }
+
+      // Colour-mode: apply the stored (or system) preference and wire the
+      // topbar toggle. Runs after the shell exists so the button is found.
+      applyMode(currentMode());
+      wireModeToggle();
 
       // Inject theme behaviour (assets/main.js equivalent) after render.
       if (theme.js) {

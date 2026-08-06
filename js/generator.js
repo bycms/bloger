@@ -92,12 +92,12 @@ Bloger.Generator = {
   // substituted at runtime by app.js. The resolved design object
   // is embedded both as data and as a ready-made `:root` style
   // block that the runtime injects.
-  compilePack: async function (manifest, design) {
+  compilePack: async function (manifest, design, accent) {
     // Saved themes have no folder on disk — compile the starter templates
     // with the resolved design instead of fetching theme files.
     if (manifest.saved) {
       return Bloger.Scaffold.packJsFromPack(
-        Bloger.Scaffold.packWithDesign(manifest.id, manifest.name, design)
+        Bloger.Scaffold.packWithDesign(manifest.id, manifest.name, design, accent)
       );
     }
     var templates = manifest.templates || {};
@@ -125,6 +125,9 @@ Bloger.Generator = {
       design: design || {},
       designCss: Bloger.Design
         ? Bloger.Design.styleBlock(design || Bloger.Design.defaults(manifest.design))
+        : "",
+      darkDesignCss: Bloger.Design
+        ? Bloger.Design.darkStyleBlock(design || Bloger.Design.defaults(manifest.design), accent)
         : ""
     };
     return (
@@ -201,7 +204,7 @@ Bloger.Generator = {
     //    design (theme defaults + adopter overrides) baked in.
     files.push({
       name: "themes/" + manifest.id + ".js",
-      content: await Bloger.Generator.compilePack(manifest, design)
+      content: await Bloger.Generator.compilePack(manifest, design, site.accent)
     });
 
     return files;

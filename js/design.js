@@ -517,7 +517,7 @@ Bloger.Design.darkStyleBlock = function (design, accent) {
   vars += "\n  --line: " + dark.page.borderColor + ";";
   vars += "\n  --soft: " + (dark.blocks.code.background || dark.page.borderColor) + ";";
   return (
-    ":root[data-be-mode=\"dark\"] {\n" + vars + "\n}\n" +
+    ":root[data-be-mode=\"dark\"] {\n  color-scheme: dark;\n" + vars + "\n}\n" +
     ":root[data-be-mode=\"dark\"] body::before{background:" + dark.page.pageBackground + ";}"
   );
 };
