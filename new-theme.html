@@ -5,27 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Build a theme — Bloger</title>
   <link rel="stylesheet" href="css/tool.css">
+  <script src="js/theme-mode.js"></script>
   <style>
     .gen-layout { display: grid; grid-template-columns: minmax(0,1fr) 46%; }
     .gen-main { padding: 0 24px 40px 0; min-width: 0; }
-    .gen-preview { border-left: 1px solid var(--tool-line); position: sticky; top: 62px; align-self: start; background: #fff; }
+    .gen-preview { border-left: 1px solid var(--tool-line); position: sticky; top: 62px; align-self: start; background: var(--tool-panel); }
     .gen-preview iframe { width: 100%; height: calc(100vh - 150px); border: 0; display: block; }
     .design-page { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 16px; }
     .design-page .field { margin-bottom: 14px; }
-    .design-block { border: 1px solid var(--tool-line); background: var(--tool-panel); margin-bottom: 10px; }
+    .design-block { border: 1px solid var(--tool-line); background: var(--tool-panel); margin-bottom: 10px; border-radius: var(--radius, 0px); }
     .design-block summary { cursor: pointer; padding: 10px 14px; font-weight: 600; font-size: 14px; list-style: none; display: flex; align-items: center; justify-content: space-between; }
     .design-block summary::-webkit-details-marker { display: none; }
     .design-block summary::after { content: "+"; color: var(--tool-muted); }
     .design-block[open] summary::after { content: "–"; }
     .design-block .design-block-body { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 16px; padding: 4px 14px 14px; }
-    .design-block .field { margin-bottom: 12px; }
-    .saved-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--tool-line); background: var(--tool-panel); margin-bottom: 8px; }
+    .design-block .field { margin-bottom: 12px; }.saved-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--tool-line); background: var(--tool-panel); margin-bottom: 8px; border-radius: var(--radius, 0px); }
     .saved-info { flex: 1; min-width: 0; }
     .saved-name { font-weight: 600; }
     .saved-id { color: var(--tool-muted); font-size: 12px; margin-left: 8px; }
     .saved-actions { display: flex; gap: 8px; }
     .empty { color: var(--tool-muted); font-size: 13px; }
     .notice { font-size: 12px; color: var(--tool-muted); margin: 4px 0 8px; }
+    .mode-tabs { display: inline-flex; border: 1px solid var(--tool-line); margin-bottom: 14px; }
+    .mode-tab {
+      background: var(--tool-panel);
+      color: var(--tool-muted);
+      border: 0;
+      border-right: 1px solid var(--tool-line);
+      padding: 9px 22px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .mode-tab:last-child { border-right: 0; }
+    .mode-tab:hover { color: var(--tool-ink); }
+    .mode-tab.active { background: var(--tool-ink); color: var(--tool-bg); }
+    .dark-sync { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; padding: 12px 14px; border: 1px solid var(--tool-line); background: var(--tool-panel); }
+    .dark-sync-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .dark-sync-label input[type="checkbox"] { width: auto; height: auto; accent-color: var(--tool-accent); }
+    .dark-sync .notice { margin: 2px 0 0 24px; }
     @media (max-width: 1200px) { .gen-layout { grid-template-columns: 1fr; } .gen-preview { display: none; } .design-page, .design-block .design-block-body { grid-template-columns: repeat(4, 1fr); } }
     @media (max-width: 800px) { .design-page, .design-block .design-block-body { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 650px) { .design-page, .design-block .design-block-body { grid-template-columns: repeat(2, 1fr); } }
@@ -60,7 +79,22 @@
           These become the theme pack's defaults (CSS custom properties <code>--be-*</code>).
           Adopters can still override them in the generator.
         </p>
+        <div class="mode-tabs" id="mode-tabs">
+          <button class="mode-tab active" type="button" data-mode="light">Light</button>
+          <button class="mode-tab" type="button" data-mode="dark">Dark</button>
+        </div>
+        <div class="dark-sync hidden" id="dark-sync">
+          <label class="dark-sync-label">
+            <input type="checkbox" id="dark-sync-check" checked>
+            Sync dark mode with Light
+          </label>
+          <p class="notice" id="dark-sync-note">
+            Dark colors are derived from your Light settings automatically — set a custom
+            page background and the dark preview follows it.
+          </p>
+        </div>
         <div id="design-panel"></div>
+        <div id="dark-panel" class="hidden"></div>
 
         <h2 class="section-title">Actions</h2>
         <div class="gen-actions" style="display:flex;gap:10px;flex-wrap:wrap">
@@ -84,8 +118,7 @@
   </main>
 
   <footer class="tool-footer">
-    <span>© Bloger</span>
-    <span>Downloaded packs: copy into your folder's themes/ and register in themes/index.js.</span>
+    <span>© 2026 Boyuan Chen</span>
   </footer>
 
   <script src="lib/jszip.min.js"></script>

@@ -1,0 +1,81 @@
+{
+  "id": "azure",
+  "name": "Azure",
+  "description": "Light-blue backdrop, dark-blue text, blue accents with 4px radius and a sidebar.",
+  "version": "1.0.0",
+  "author": "Bloger",
+  "entry": "index.html",
+  "colors": {
+    "bg": "#eff6ff",
+    "fg": "#1e3a8a",
+    "muted": "#64748b",
+    "line": "#bfdbfe",
+    "accent": "#2563eb"
+  },
+  "design": {
+    "page": {
+      "cornerRadius": 4,
+      "maxWidth": 680,
+      "pageBackground": "#eff6ff",
+      "contentBg": "#ffffff",
+      "textColor": "#1e3a8a",
+      "mutedColor": "#64748b",
+      "borderColor": "#dbeafe",
+      "bodyFontFamily": "system-ui",
+      "arrangement": "with-sidebar"
+    },
+    "shell": {
+      "topbar": {
+        "bg": "#eff6ff",
+        "fg": "#1e3a8a",
+        "border": "#bfdbfe",
+        "toggleRadius": 4
+      },
+      "sidebar": {
+        "bg": "#eff6ff",
+        "fg": "#1e3a8a",
+        "border": "#bfdbfe",
+        "itemRadius": 4,
+        "activeBar": "#2563eb",
+        "dateColor": "#64748b"
+      },
+      "footer": {
+        "bg": "#eff6ff",
+        "fg": "#64748b",
+        "border": "#bfdbfe"
+      }
+    },
+    "typography": {
+      "h1": { "color": "#1e3a8a" },
+      "h2": { "color": "#1e3a8a" },
+      "h3": { "color": "#1e3a8a" },
+      "small": { "color": "#64748b" },
+      "link": { "color": "#2563eb", "hoverColor": "#1d4ed8" }
+    },
+    "blocks": {
+      "quote": { "borderColor": "#2563eb", "color": "#3b5b9a" },
+      "code": { "background": "#dbeafe" },
+      "table": { "headerBg": "#dbeafe", "borderColor": "#bfdbfe", "headerColor": "#1e3a8a" },
+      "image": { "cornerRadius": 4 }
+    }
+  },
+  "config": [
+    { "key": "title", "label": "Blog title", "type": "text", "default": "My Blog", "required": true },
+    { "key": "subtitle", "label": "Tagline / subtitle", "type": "text", "default": "Reflections in blue." },
+    { "key": "accent", "label": "Accent color", "type": "color", "default": "#2563eb" }
+  ],
+  "copy": [
+    "assets/style.css",
+    "assets/main.js"
+  ],
+  "templates": {
+    "index.html": {
+      "path": "index.html",
+      "tokens": ["title", "subtitle", "bio", "year"]
+    },
+    "post.html": {
+      "path": "post.html",
+      "tokens": ["title", "year", "postTitle", "postDate", "postContent"]
+    }
+  }
+}

@@ -34,14 +34,18 @@ Bloger.Generator = {
   /* ---------- defaults ---------- */
 
   // Default project data (runtime shape: { site, posts, theme }).
+  // Site fields (title / subtitle / bio / accent) seed from the theme's
+  // manifest `config` defaults so previews show the theme's intended look.
   defaultConfig: function (manifest) {
+    var site = { title: "My Blog", subtitle: "", bio: "", accent: "#111111" };
+    (manifest && manifest.config || []).forEach(function (f) {
+      if (f.key === "title") site.title = f.default || site.title;
+      if (f.key === "subtitle") site.subtitle = f.default || site.subtitle;
+      if (f.key === "bio") site.bio = f.default || site.bio;
+      if (f.key === "accent") site.accent = f.default || site.accent;
+    });
     return {
-      site: {
-        title: "My Blog",
-        subtitle: "",
-        bio: "",
-        accent: "#111111"
-      },
+      site: site,
       posts: [],
       theme: manifest.id
     };

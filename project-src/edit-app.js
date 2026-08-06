@@ -54,6 +54,10 @@
       (theme.designCss || "") +
       "\n:root {\n" + lines.join("\n") + "\n}" +
       "\nbody { font-family: var(--be-body-font, inherit); }" +
+      "\nbody { position: relative; }" +
+      "\nbody::before { content:''; position: fixed; inset: 0; z-index: -2; pointer-events: none; background: var(--be-page-bg, #fff);" +
+        " background-image: var(--be-page-bg-image, none); background-position: center; background-size: cover; background-repeat: no-repeat;" +
+        " filter: blur(var(--be-page-bg-blur, 0px)); opacity: var(--be-page-bg-opacity, 1); }" +
       "\n.be-content { color: var(--be-text, #1a1a1a); }" +
       "\n.be-quote .be-content { color: var(--be-quote-color, #555); border-left-color: var(--be-quote-border, #bbb); }";
   }
@@ -232,7 +236,7 @@
     var content = currentId
       ? Blog.renderPost(theme, data, currentId)
       : Blog.renderHome(theme, data);
-    var html = Blog.renderShell(data, content, currentId);
+    var html = Blog.renderShell(data, content, currentId, theme.design);
 
     var styleValues = {};
     Object.keys(data.site || {}).forEach(function (k) { styleValues[k] = data.site[k]; });

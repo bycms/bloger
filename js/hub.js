@@ -10,7 +10,8 @@ var Bloger = window.Bloger || {};
   var errorBox = document.getElementById("gallery-error");
 
   function showError(msg) {
-    errorBox.textContent = msg;
+    if (!errorBox) return;
+    errorBox.innerHTML = msg;
     errorBox.classList.remove("hidden");
   }
 
@@ -39,7 +40,9 @@ var Bloger = window.Bloger || {};
       '<a class="btn btn-ghost" href="preview.html?theme=' + encodeURIComponent(theme.id) +
         '">Preview</a>' +
       '<a class="btn" href="generator.html?theme=' + encodeURIComponent(theme.id) +
-        '">Generate</a>';
+        '">Generate</a>' +
+      '<a class="btn btn-ghost" href="new-theme.html?fork=' + encodeURIComponent(theme.id) +
+        '">Fork</a>';
     body.appendChild(actions);
 
     card.appendChild(preview);
@@ -90,17 +93,6 @@ var Bloger = window.Bloger || {};
   }
 
   async function init() {
-    // Guard: fetch needs http(s); advise serving locally or on Pages over file://.
-    if (window.location.protocol === "file:") {
-      showError(
-        "Bloger needs an http(s) origin to load themes (browsers block fetch() over file://). " +
-        "Two easy options: <b>(1)</b> double-click <b>serve.bat</b> (or run " +
-        "<span class=\"mono\">python -m http.server 8080</span>) and open " +
-        "<span class=\"mono\">http://localhost:8080</span>; or <b>(2)</b> push this folder to a " +
-        "GitHub repository and enable GitHub Pages — it is served over https with no local server."
-      );
-    }
-
     var list;
     try {
       list = await Bloger.Registry.list();

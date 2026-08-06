@@ -50,6 +50,9 @@ Bloger.Design.PAGE_TOKENS = {
   maxWidth:         { cssVar: "--be-max-width",     type: "number", unit: "px", default: 680,        label: "Content width" },
   contentGap:       { cssVar: "--be-content-gap",   type: "number", unit: "px", default: 18,         label: "Block spacing" },
   pageBackground:   { cssVar: "--be-page-bg",       type: "color",  default: "#ffffff",              label: "Page background" },
+  bgImage:          { cssVar: "--be-page-bg-image", type: "string", default: "", bgImage: true,       label: "Page background image (URL)" },
+  bgBlur:           { cssVar: "--be-page-bg-blur",  type: "number", unit: "px", default: 0,           label: "Page background blur" },
+  bgOpacity:        { cssVar: "--be-page-bg-opacity", type: "number", default: 1,                    label: "Page background opacity" },
   contentBg:        { cssVar: "--be-content-bg",    type: "color",  default: "transparent",          label: "Content background" },
   textColor:        { cssVar: "--be-text",          type: "color",  default: "#111111",              label: "Text color" },
   mutedColor:       { cssVar: "--be-muted",         type: "color",  default: "#6b6b6b",              label: "Muted color" },
@@ -70,6 +73,9 @@ Bloger.Design.PAGE_TOKENS = {
 Bloger.Design.SHELL_TOKENS = {
   topbar: {
     bg:           { cssVar: "--be-topbar-bg",          type: "color",  default: "#ffffff",        label: "Background" },
+    bgImage:      { cssVar: "--be-topbar-bg-image",    type: "string", default: "", bgImage: true, label: "Background image (URL)" },
+    bgBlur:       { cssVar: "--be-topbar-bg-blur",     type: "number", unit: "px", default: 0,     label: "Background blur" },
+    bgOpacity:    { cssVar: "--be-topbar-bg-opacity",  type: "number", default: 1,                 label: "Background opacity" },
     fg:           { cssVar: "--be-topbar-fg",          type: "color",  default: "#111111",        label: "Text / title" },
     border:       { cssVar: "--be-topbar-border",      type: "color",  default: "#e0e0e0",        label: "Bottom border" },
     height:       { cssVar: "--be-topbar-height",      type: "number", unit: "px", default: 52,    label: "Height" },
@@ -82,6 +88,9 @@ Bloger.Design.SHELL_TOKENS = {
   },
   sidebar: {
     bg:           { cssVar: "--be-sidebar-bg",           type: "color",  default: "#ffffff",          label: "Background" },
+    bgImage:      { cssVar: "--be-sidebar-bg-image",     type: "string", default: "", bgImage: true,   label: "Background image (URL)" },
+    bgBlur:       { cssVar: "--be-sidebar-bg-blur",      type: "number", unit: "px", default: 0,       label: "Background blur" },
+    bgOpacity:    { cssVar: "--be-sidebar-bg-opacity",   type: "number", default: 1,                   label: "Background opacity" },
     fg:           { cssVar: "--be-sidebar-fg",           type: "color",  default: "#111111",          label: "Text" },
     border:       { cssVar: "--be-sidebar-border",       type: "color",  default: "#e0e0e0",          label: "Right border" },
     width:        { cssVar: "--be-sidebar-width",        type: "number", unit: "px", default: 262,     label: "Width" },
@@ -99,6 +108,9 @@ Bloger.Design.SHELL_TOKENS = {
   },
   footer: {
     bg:           { cssVar: "--be-footer-bg",    type: "color",  default: "#ffffff",        label: "Background" },
+    bgImage:      { cssVar: "--be-footer-bg-image", type: "string", default: "", bgImage: true, label: "Background image (URL)" },
+    bgBlur:       { cssVar: "--be-footer-bg-blur", type: "number", unit: "px", default: 0,   label: "Background blur" },
+    bgOpacity:    { cssVar: "--be-footer-bg-opacity", type: "number", default: 1,           label: "Background opacity" },
     fg:           { cssVar: "--be-footer-fg",    type: "color",  default: "#6b6b6b",        label: "Text" },
     border:       { cssVar: "--be-footer-border",type: "color",  default: "#e0e0e0",        label: "Top border" },
     size:         { cssVar: "--be-footer-size",  type: "number", unit: "px", default: 12,    label: "Font size" },
@@ -261,7 +273,7 @@ Bloger.Design.defaults = function (manifestDesign) {
     blocks[type] = leafValues(Bloger.Design.BLOCK_TOKENS[type], manifestDesign.blocks && manifestDesign.blocks[type]);
   });
   blocks.divider = leafValues(Bloger.Design.BLOCK_TOKENS.divider, manifestDesign.blocks && manifestDesign.blocks.divider);
-  return {
+  var result = {
     page: leafValues(Bloger.Design.PAGE_TOKENS, manifestDesign.page),
     shell: {
       topbar: leafValues(Bloger.Design.SHELL_TOKENS.topbar, manifestDesign.shell && manifestDesign.shell.topbar),
@@ -278,6 +290,10 @@ Bloger.Design.defaults = function (manifestDesign) {
     blocks: blocks,
     motion: leafValues(Bloger.Design.MOTION_TOKENS, manifestDesign.motion)
   };
+  // Carry any dark-mode config through (a full dark design document used when
+  // the user turns sync off; { sync: true } otherwise).
+  if (manifestDesign && manifestDesign.dark !== undefined) result.dark = manifestDesign.dark;
+  return result;
 };
 
 // Merge adopter overrides on top of theme defaults.
@@ -302,6 +318,8 @@ Bloger.Design.merge = function (manifestDesign, overrides) {
     applyLeaf(base.blocks[type], Bloger.Design.BLOCK_TOKENS[type], overrides.blocks && overrides.blocks[type]);
   });
   applyLeaf(base.motion, Bloger.Design.MOTION_TOKENS, overrides.motion);
+  // Preserve dark-mode config from the adopter's overrides (or the theme).
+  if (overrides && overrides.dark !== undefined) base.dark = overrides.dark;
   return base;
 };
 
@@ -339,12 +357,18 @@ function isInheritedRadius(def, value) {
 }
 
 // CSS custom property declarations for a resolved design object.
+// Background-image tokens are emitted as url("…") or none (when blank) so
+// consumers can safely use `background-image: var(--be-…-bg-image)`.
 Bloger.Design.cssVars = function (design) {
   design = design || Bloger.Design.defaults();
   var lines = [];
   eachToken(design, function (def, value) {
     if (!def.cssVar) return;
     if (isInheritedRadius(def, value)) return;
+    if (def.bgImage) {
+      lines.push("  " + def.cssVar + ": " + (value ? 'url("' + String(value) + '")' : "none") + ";");
+      return;
+    }
     lines.push("  " + def.cssVar + ": " + Bloger.Design.valueFor(def, value) + ";");
   });
   return lines.join("\n");
@@ -354,6 +378,182 @@ Bloger.Design.cssVars = function (design) {
 Bloger.Design.styleBlock = function (design) {
   return ":root {\n" + Bloger.Design.cssVars(design) + "\n}";
 };
+
+/* ============================================================
+ * Dark mode
+ * ------------------------------------------------------------
+ * Every theme has a dark variant. By default ("sync") the dark
+ * palette is derived from the Light settings — so a custom page
+ * background, text color, etc. produce a matching dark theme. If
+ * the user turns sync off, an explicit dark design document is
+ * stored in `design.dark` (a full design with { sync: false })
+ * and used instead.
+ * ============================================================ */
+
+// Turn a single CSS color into a dark-mode counterpart, preserving its hue:
+// light colors (backgrounds / borders) are darkened, dark colors (text) are
+// lightened. Non-color values (transparent / inherit / url(...) etc.) pass
+// through unchanged.
+Bloger.Design.darkColor = function (value) {
+  var str = String(value == null ? "" : value).trim();
+  if (!str) return str;
+  var lower = str.toLowerCase();
+  if (lower === "transparent" || lower === "inherit" || lower === "currentcolor" || lower === "none") return str;
+  var m;
+  if ((m = lower.match(/^#([0-9a-f]{3,8})$/))) {
+    var hex = m[1];
+    if (hex.length === 3) {
+      hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
+    }
+    var r = parseInt(hex.slice(0, 2), 16);
+    var g = parseInt(hex.slice(2, 4), 16);
+    var b = parseInt(hex.slice(4, 6), 16);
+    var a = hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1;
+    var rgb = darkRGB(r, g, b);
+    return a >= 1 ? "rgb(" + rgb.join(",") + ")" : "rgba(" + rgb.join(",") + "," + a + ")";
+  }
+  if ((m = str.match(/^rgba?\(\s*([^)]+)\)$/i))) {
+    var parts = m[1].split(",").map(function (s) { return s.trim(); });
+    var r2 = parseFloat(parts[0]), g2 = parseFloat(parts[1]), b2 = parseFloat(parts[2]);
+    if (isNaN(r2) || isNaN(g2) || isNaN(b2)) return str;
+    var a2 = parts.length > 3 ? parseFloat(parts[3]) : 1;
+    if (isNaN(a2)) a2 = 1;
+    var rgb2 = darkRGB(r2, g2, b2);
+    return a2 >= 1 ? "rgb(" + rgb2.join(",") + ")" : "rgba(" + rgb2.join(",") + "," + a2 + ")";
+  }
+  return str;
+};
+
+// Map a single RGB triple to its dark counterpart (luminance based).
+function darkRGB(r, g, b) {
+  var rn = r / 255, gn = g / 255, bn = b / 255;
+  var max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+  var l = (max + min) / 2;
+  var h = 0, s = 0;
+  if (max !== min) {
+    var d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === rn) h = ((gn - bn) / d + (gn < bn ? 6 : 0)) / 6;
+    else if (max === gn) h = ((bn - rn) / d + 2) / 6;
+    else h = ((rn - gn) / d + 4) / 6;
+  }
+  var newL, newS;
+  if (l > 0.5) {
+    // surface / border → darken, keep a hint of the hue
+    newL = 0.04 + (l - 0.5) * 0.18;   // 0.5→0.04 … 1.0→0.13
+    newS = Math.min(s, 0.4) * 0.8;
+  } else {
+    // text / foreground → lighten, keep a hint of the hue
+    newL = 0.78 + (0.5 - l) * 0.28;   // 0.5→0.78 … 0→0.92
+    newS = Math.min(s, 0.55);
+  }
+  var c = (1 - Math.abs(2 * newL - 1)) * newS;
+  var hp = h * 6;
+  var x = c * (1 - Math.abs((hp % 2) - 1));
+  var m2 = newL - c / 2;
+  var rgb;
+  if (hp < 1) rgb = [c, x, 0];
+  else if (hp < 2) rgb = [x, c, 0];
+  else if (hp < 3) rgb = [0, c, x];
+  else if (hp < 4) rgb = [0, x, c];
+  else if (hp < 5) rgb = [x, 0, c];
+  else rgb = [c, 0, x];
+  return [Math.round((rgb[0] + m2) * 255), Math.round((rgb[1] + m2) * 255), Math.round((rgb[2] + m2) * 255)];
+}
+
+// Build a new full design document from `src`, applying `colorFn` to every
+// color token (non-color tokens are copied through unchanged).
+function mapDesign(src, colorFn) {
+  function walk(defs, srcObj, outObj) {
+    Object.keys(defs).forEach(function (k) {
+      var v = srcObj[k];
+      if (defs[k].type === "color") v = colorFn(v);
+      outObj[k] = v;
+    });
+  }
+  var out = { page: {}, shell: {}, typography: {}, blocks: {}, motion: {} };
+  walk(Bloger.Design.PAGE_TOKENS, src.page, out.page);
+  ["topbar", "sidebar", "footer"].forEach(function (g) {
+    out.shell[g] = {};
+    walk(Bloger.Design.SHELL_TOKENS[g], src.shell[g], out.shell[g]);
+  });
+  ["h1", "h2", "h3", "small", "link"].forEach(function (g) {
+    out.typography[g] = {};
+    walk(Bloger.Design.TYPO_TOKENS[g], src.typography[g], out.typography[g]);
+  });
+  Bloger.Design.BLOCK_TYPES.concat(["divider"]).forEach(function (t) {
+    out.blocks[t] = {};
+    walk(Bloger.Design.BLOCK_TOKENS[t], src.blocks[t], out.blocks[t]);
+  });
+  walk(Bloger.Design.MOTION_TOKENS, src.motion, out.motion);
+  return out;
+}
+
+// Derive a full dark design from a light design (sync mode).
+Bloger.Design.deriveDark = function (design) {
+  design = design || Bloger.Design.defaults();
+  return mapDesign(design, Bloger.Design.darkColor);
+};
+
+// Resolve the effective dark design for a light design:
+//  - sync (or no explicit dark config): derived from the Light settings;
+//  - sync off: the explicit dark design document stored in design.dark.
+Bloger.Design.darkDesign = function (design) {
+  var darkCfg = (design && design.dark) || {};
+  if (darkCfg.sync === false) return Bloger.Design.defaults(darkCfg);
+  return Bloger.Design.deriveDark(design);
+};
+
+// A `:root[data-be-mode="dark"] { … }` block for a design. The preview
+// runtime toggles `data-be-mode` on <html> to activate it. Also overrides the
+// common theme-local variables (--fg/--muted/--line/--soft) that
+// accent-adaptive themes derive from the accent, so they read correctly dark.
+Bloger.Design.darkStyleBlock = function (design, accent) {
+  var dark = Bloger.Design.darkDesign(design);
+  var vars = Bloger.Design.cssVars(dark);
+  if (accent) vars += "\n  --be-accent: " + Bloger.Design.darkColor(accent) + ";";
+  vars += "\n  --fg: " + dark.page.textColor + ";";
+  vars += "\n  --muted: " + dark.page.mutedColor + ";";
+  vars += "\n  --line: " + dark.page.borderColor + ";";
+  vars += "\n  --soft: " + (dark.blocks.code.background || dark.page.borderColor) + ";";
+  return (
+    ":root[data-be-mode=\"dark\"] {\n" + vars + "\n}\n" +
+    ":root[data-be-mode=\"dark\"] body::before{background:" + dark.page.pageBackground + ";}"
+  );
+};
+
+// Reusable CSS that renders background images (with blur + opacity) for the
+// page and the shell areas. A background image is carried on an absolutely
+// positioned ::before layer behind the area's own content, so the solid color
+// still shows through when no image (or partial opacity) is set. When the
+// image token resolves to "none" no background paints at all.
+Bloger.Design.backgroundCss = (function () {
+  var parts = [
+    "body{position:relative;}",
+    "body::before{content:\"\";position:fixed;inset:0;z-index:-2;pointer-events:none;",
+      "background:#fff;background-image:var(--be-page-bg-image,none);",
+      "background-position:center;background-size:cover;background-repeat:no-repeat;",
+      "filter:blur(var(--be-page-bg-blur,0px));opacity:var(--be-page-bg-opacity,1);}",
+    ".be-topbar{position:relative;}",
+    ".be-topbar::before{content:\"\";position:absolute;inset:0;z-index:-1;pointer-events:none;",
+      "background-image:var(--be-topbar-bg-image,none);background-position:center;",
+      "background-size:cover;background-repeat:no-repeat;",
+      "filter:blur(var(--be-topbar-bg-blur,0px));opacity:var(--be-topbar-bg-opacity,1);}",
+    ".be-sidebar{position:relative;}",
+    ".be-sidebar::before{content:\"\";position:absolute;inset:0;z-index:-1;pointer-events:none;",
+      "background-image:var(--be-sidebar-bg-image,none);background-position:center;",
+      "background-size:cover;background-repeat:no-repeat;",
+      "filter:blur(var(--be-sidebar-bg-blur,0px));opacity:var(--be-sidebar-bg-opacity,1);}",
+    ".be-footer{position:relative;}",
+    ".be-footer::before{content:\"\";position:absolute;inset:0;z-index:-1;pointer-events:none;",
+      "background-image:var(--be-footer-bg-image,none);background-position:center;",
+      "background-size:cover;background-repeat:no-repeat;",
+      "filter:blur(var(--be-footer-bg-blur,0px));opacity:var(--be-footer-bg-opacity,1);}",
+    /* sidebars and footers have their own borders/padding that must sit above the ::before */
+    ".be-sidebar > *, .be-footer > *{position:relative;}"
+  ];
+  return parts.join("");
+})();
 
 // Whether the design uses a sidebar layout (applied by a future stage).
 Bloger.Design.isSidebar = function (design) {
@@ -474,10 +674,12 @@ Bloger.Design.renderPanel = function (container, design, onChange) {
     }
 
     el.style.outline = "none";
-    el.style.border = "1px solid #222";
-    el.style.borderRadius = "0";
+    el.style.border = "1px solid var(--tool-line, #222)";
+    el.style.borderRadius = "var(--radius, 0px)";
     el.style.height = "40px";
-    el.style.padding = "0 8px";
+    // Color inputs keep the native swatch filling the whole control (with no
+    // side padding) so it clips to the rounded shape instead of an inset coin.
+    el.style.padding = def.type === "color" ? "0" : "0 8px";
 
     el.addEventListener("input", function () {
       var val = el.value;

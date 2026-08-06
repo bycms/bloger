@@ -315,7 +315,7 @@ without editing theme CSS.
 | page | content width | `--be-max-width` |
 | page | page / text / muted / border colors | `--be-page-bg`, `--be-text`, `--be-muted`, `--be-border` |
 | page | body font | `--be-body-font` |
-| page | arrangement | *(layout class, future work)* |
+| page | arrangement | *(pure data — applied by the shell at render time)* |
 | block | font family | `--be-<block>-font` |
 | block | font size | `--be-<block>-size` |
 | block | line height | `--be-<block>-lh` |
@@ -335,5 +335,8 @@ To add a new design token later (e.g. letter-spacing, text alignment, spacing sc
 3. The generator's Design tokens panel and the runtime pick it up automatically — no other wiring
    needed.
 
-Page **arrangement** (`single-column` / `with-sidebar`) is defined in the schema and UI today;
-applying the sidebar layout classes is the next piece of builder work.
+Page **arrangement** (`single-column` / `with-sidebar`) is defined in the schema and is applied
+by the runtime shell at render time: a `single-column` theme renders without the sidebar (and
+without the sidebar toggle), while `with-sidebar` (the default) keeps the foldable sidebar.
+Predefined themes can ship either way — e.g. `indigo` is `single-column`, `azure` is
+`with-sidebar`. Users can fork any predefined theme in the theme builder and flip this token.

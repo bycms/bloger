@@ -1,0 +1,80 @@
+{
+  "id": "indigo",
+  "name": "Indigo",
+  "description": "Calm indigo accents with text that adapts to the accent, 8px corners and no sidebar.",
+  "version": "1.0.0",
+  "author": "Bloger",
+  "entry": "index.html",
+  "colors": {
+    "bg": "#ffffff",
+    "fg": "#312e81",
+    "muted": "#6b6f8a",
+    "line": "#e3e1f0",
+    "accent": "#4f46e5"
+  },
+  "design": {
+    "page": {
+      "cornerRadius": 8,
+      "maxWidth": 680,
+      "pageBackground": "#d0cbe7",
+      "textColor": "#312e81",
+      "mutedColor": "#6b6f8a",
+      "borderColor": "#e3e1f0",
+      "bodyFontFamily": "system-ui",
+      "arrangement": "single-column"
+    },
+    "shell": {
+      "topbar": {
+        "bg": "#c0bbd6",
+        "fg": "#312e81",
+        "border": "#c0bbd6",
+        "toggleRadius": 8
+      },
+      "sidebar": {
+        "bg": "#ffffff",
+        "fg": "#312e81",
+        "border": "#e3e1f0",
+        "itemRadius": 8,
+        "activeBar": "#4f46e5",
+        "dateColor": "#6b6f8a"
+      },
+      "footer": {
+        "bg": "#ffffff",
+        "fg": "#6b6f8a",
+        "border": "#e3e1f0"
+      }
+    },
+    "typography": {
+      "h1": { "color": "#17123a" },
+      "h2": { "color": "#312e81" },
+      "h3": { "color": "#312e81" },
+      "small": { "color": "#6b6f8a" },
+      "link": { "color": "#4f46e5", "hoverColor": "#4338ca" }
+    },
+    "blocks": {
+      "quote": { "borderColor": "#4f46e5", "color": "#4338ca" },
+      "code": { "background": "#eef2ff" },
+      "table": { "headerBg": "#eef2ff", "borderColor": "#e3e1f0", "headerColor": "#312e81" },
+      "image": { "cornerRadius": 8 }
+    }
+  },
+  "config": [
+    { "key": "title", "label": "Blog title", "type": "text", "default": "My Blog", "required": true },
+    { "key": "subtitle", "label": "Tagline / subtitle", "type": "text", "default": "Notes, tinted indigo." },
+    { "key": "accent", "label": "Accent color", "type": "color", "default": "#4f46e5" }
+  ],
+  "copy": [
+    "assets/style.css",
+    "assets/main.js"
+  ],
+  "templates": {
+    "index.html": {
+      "path": "index.html",
+      "tokens": ["title", "subtitle", "bio", "year"]
+    },
+    "post.html": {
+      "path": "post.html",
+      "tokens": ["title", "year", "postTitle", "postDate", "postContent"]
+    }
+  }
+}

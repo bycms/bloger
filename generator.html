@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generate — Bloger</title>
   <link rel="stylesheet" href="css/tool.css">
+  <script src="js/theme-mode.js"></script>
   <link rel="stylesheet" href="project-src/editor.css">
   <style>
     .gen-layout { display: grid; grid-template-columns: minmax(0,1fr) 46%; }
     .gen-main { padding: 0 24px 64px 0; min-width: 0; }
-    .gen-preview { border-left: 1px solid var(--tool-line); position: sticky; top: 62px; align-self: start; background: #fff; }
+    .gen-preview { border-left: 1px solid var(--tool-line); position: sticky; top: 62px; align-self: start; background: var(--tool-panel); }
     .gen-preview iframe { width: 100%; height: calc(100vh - 120px); border: 0; display: block; }
     .gen-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .site-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
@@ -26,6 +27,25 @@
       .gen-layout { grid-template-columns: 1fr; }
       .gen-preview { display: none; }
     }
+
+    /* dark mode: keep the trial block editor readable (scoped to this page,
+       so the downloaded project's editor.css is untouched) */
+    :root[data-theme="dark"] .be-content { color: var(--tool-ink); }
+    :root[data-theme="dark"] .be-quote .be-content { color: var(--tool-muted); border-left-color: var(--tool-line); }
+    :root[data-theme="dark"] .be-code .be-content { background: var(--tool-soft); color: var(--tool-ink); }
+    :root[data-theme="dark"] .be-code .be-content:focus { outline-color: var(--tool-line); }
+    :root[data-theme="dark"] .be-row:hover { background: rgba(255,255,255,.03); }
+    :root[data-theme="dark"] .be-tool { background: var(--tool-panel); border-color: var(--tool-line); color: var(--tool-muted); }
+    :root[data-theme="dark"] .be-tool:hover { background: var(--tool-soft); color: var(--tool-ink); }
+    :root[data-theme="dark"] .be-list-item::before { color: var(--tool-muted); }
+    :root[data-theme="dark"] .be-cell { border-color: var(--tool-line); color: var(--tool-ink); }
+    :root[data-theme="dark"] .be-cell:focus { background: var(--tool-soft); }
+    :root[data-theme="dark"] .be-img-url, :root[data-theme="dark"] .be-img-caption { border-color: var(--tool-line); background: var(--tool-panel); color: var(--tool-ink); }
+    :root[data-theme="dark"] .be-divider { border-top-color: var(--tool-line); }
+    :root[data-theme="dark"] .be-slash { background: var(--tool-panel); border-color: var(--tool-line); box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+    :root[data-theme="dark"] .be-slash-item:hover { background: var(--tool-soft); }
+    :root[data-theme="dark"] .be-slash-label { color: var(--tool-ink); }
+    :root[data-theme="dark"] .be-slash-hint { color: var(--tool-muted); }
   </style>
 </head>
 <body>

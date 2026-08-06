@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bloger — Personal Blog Template Hub</title>
   <link rel="stylesheet" href="css/tool.css">
+  <script src="js/theme-mode.js"></script>
 </head>
 <body>
   <header id="bloger-toolbar" class="toolbar"></header>
@@ -12,17 +13,26 @@
   <main class="page">
     <h1 class="page-title">Bloger</h1>
     <p class="page-sub">
-      Your blog template hub. <b>Browse</b> themes, <b>generate</b> them, and <b>preview</b> the editor live. <br/>
-      <a href="new-theme.html">Start building your own themes.</a> They will be save in-browser.
+      Your blog template hub. <b>Browse</b> themes, <b>generate</b> them, and <b>preview</b> the editor live.
     </p>
 
-    <div id="theme-gallery" class="theme-grid"></div>
+    <h2>Get started</h2>
+    <p>
+      If you are new to Bloger, visit <a href="guideline.html">this page</a> for guidelines. <br/>
+      Find all your themes below, or <a href="new-theme.html">create a new theme from blank</a>.
+    </p>
+
+    <section id="prebuilt-themes" class="section">
+      <h2 class="section-title">Prebuilt themes by Bloger</h2>
+      <p class="section-sub">Fork these themes or click Generate to directly use.</p>
+      <div id="theme-gallery" class="theme-grid"></div>
+    </section>
 
     <div id="gallery-error" class="msg err hidden"></div>
 
-    <section id="saved-themes" class="saved-section hidden">
+    <section id="saved-themes" class="section hidden">
       <h2 class="section-title">Your saved themes</h2>
-      <p class="section-sub">Themes you built in the <a href="new-theme.html">theme builder</a> and saved in this browser. They are ready to preview, generate or edit.</p>
+      <p class="section-sub">Themes you <a href="new-theme.html">built</a> and saved in this browser. &nbsp;Readily available.</p>
       <div id="saved-grid" class="theme-grid"></div>
     </section>
   </main>

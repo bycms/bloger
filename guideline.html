@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guideline — How to use Bloger</title>
+  <link rel="stylesheet" href="css/tool.css">
+  <script src="js/theme-mode.js"></script>
+  <style>
+    /* -------- guideline-specific styling -------- */
+    .guide-hero {
+      border: 1px solid var(--tool-line);
+      border-left: 4px solid var(--tool-ink);
+      background: linear-gradient(180deg, var(--tool-panel), var(--tool-soft));
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .guide-hero p:last-child { margin-bottom: 0; }
+
+    .guide-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 32px;
+      padding: 0;
+      list-style: none;
+    }
+    .guide-nav a {
+      display: inline-block;
+      padding: 7px 12px;
+      border: 1px solid var(--tool-line);
+      background: var(--tool-panel);
+      color: var(--tool-muted);
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .guide-nav a:hover { color: var(--tool-ink); border-color: var(--tool-ink); }
+
+    .guide-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 16px;
+      margin: 16px 0;
+      padding: 18px;
+      border: 1px solid var(--tool-line);
+      background: var(--tool-panel);
+    }
+    .guide-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px; height: 48px;
+      border: 2px solid var(--tool-ink);
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .guide-step h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -0.01em; }
+    .guide-step p { margin: 0 0 8px; }
+    .guide-step p:last-child { margin-bottom: 0; }
+
+    .guide-callout {
+      margin: 20px 0;
+      padding: 14px 16px;
+      border-left: 3px solid var(--tool-ink);
+      background: var(--tool-soft);
+      font-size: 14px;
+    }
+    .guide-callout.tip   { border-left-color: #2c7a2c; }
+    .guide-callout.warn  { border-left-color: #b7791f; }
+    .guide-callout .label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .guide-callout.tip  .label { color: #2c7a2c; }
+    .guide-callout.warn .label { color: #b7791f; }
+
+    :root[data-theme="dark"] .guide-callout.tip   { border-left-color: #4caf50; }
+    :root[data-theme="dark"] .guide-callout.warn  { border-left-color: #f0a45d; }
+    :root[data-theme="dark"] .guide-callout.tip  .label { color: #81c784; }
+    :root[data-theme="dark"] .guide-callout.warn .label { color: #ffb74d; }
+
+    code.inline {
+      background: var(--tool-soft);
+      border: 1px solid var(--tool-line);
+      padding: 1px 5px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+      font-size: 13px;
+    }
+    .files {
+      font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      background: #171717;
+      color: #e6e6e6;
+      padding: 16px 18px;
+      overflow-x: auto;
+    }
+    .files .c { color: #7c7c7c; }
+    .files .k { color: #7ee787; }
+    .files .f { color: #79c0ff; }
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+    .mini-table th, .mini-table td {
+      text-align: left;
+      padding: 8px 10px;
+      border: 1px solid var(--tool-line);
+      vertical-align: top;
+    }
+    .mini-table th { background: var(--tool-soft); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <header id="bloger-toolbar" class="toolbar"></header>
+
+  <main class="page page-narrow">
+    <h1 class="page-title">How to use Bloger</h1>
+    <p class="page-sub">
+      Everything you need to go from a blank canvas to a published personal blog — browse
+      themes, generate a self-contained project, edit it in your browser, build your own
+      theme, and put it online.
+    </p>
+
+    <ul class="guide-nav">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#quickstart">Quick start</a></li>
+      <li><a href="#browse">1 · Browse themes</a></li>
+      <li><a href="#generate">2 · Generate a blog</a></li>
+      <li><a href="#edit">3 · Edit your blog</a></li>
+      <li><a href="#deploy">4 · Publish it</a></li>
+      <li><a href="#themes">5 · Build a theme</a></li>
+      <li><a href="#tokens">Design tokens</a></li>
+      <li><a href="#projects">The downloaded project</a></li>
+      <li><a href="#faq">Notes &amp; FAQ</a></li>
+    </ul>
+
+    <!-- ================= Overview ================= -->
+    <section id="overview">
+      <h2 class="section-title">Overview</h2>
+      <p>
+        Bloger is a <b>personal blog template generator &amp; theme hub</b> that runs entirely
+        in your browser — no server, no build step. You pick a visual theme, generate a
+        complete <b>self-contained blog project folder</b>, open its built-in editor, write
+        posts, and publish the folder anywhere that serves static files (GitHub Pages,
+        Netlify, or even straight from <code class="inline">file://</code>).
+      </p>
+      <p>There are two distinct things here, and the difference matters:</p>
+      <table class="mini-table">
+        <thead>
+          <tr><th>Thing</th><th>What it is</th><th>Where</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Bloger tool</b></td>
+            <td>The site you're on now. Browse themes, preview them, edit design tokens,
+                generate a blog folder, and build/save your own themes.</td>
+            <td>This folder — <code class="inline">index.html</code>, <code class="inline">generator.html</code>, <code class="inline">new-theme.html</code>, etc.</td>
+          </tr>
+          <tr>
+            <td><b>Downloaded blog project</b></td>
+            <td>The folder you get from Generate. Your actual blog, with its own renderer,
+                theme pack, and in-project editor. Fully separate from Bloger.</td>
+            <td>Generated via the browser — a ZIP you download.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ================= Quick start ================= -->
+    <section id="quickstart">
+      <h2 class="section-title">Quick start</h2>
+      <p>
+        Because Bloger loads theme files with <code class="inline">fetch()</code>, browsers
+        block it when the page is opened over <code class="inline">file://</code>. Start a local
+        server first:
+      </p>
+      <div class="guide-step">
+        <div class="guide-step-num">A</div>
+        <div>
+          <h3>Start the server</h3>
+          <p>Double-click <code class="inline">serve.bat</code> (requires Python), or run:</p>
+          <pre class="files"><span class="c"># from the bloger folder</span>
+python -m http.server <span class="k">8080</span></pre>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">B</div>
+        <div>
+          <h3>Open the hub</h3>
+          <p>Visit <code class="inline">http://localhost:8080</code>. The Bloger theme gallery appears.</p>
+        </div>
+      </div>
+      <div class="guide-callout warn">
+        <span class="label">No server? Use GitHub Pages</span><br>
+        The whole tool is pure static and deploys to GitHub Pages as-is (a
+        <code class="inline">.nojekyll</code> file and a ready workflow are included). See
+        <a href="#deploy">Publish it</a>.
+      </div>
+    </section>
+
+    <!-- ================= 1 · Browse ================= -->
+    <section id="browse">
+      <h2 class="section-title">1 · Browse themes</h2>
+      <p>
+        The hub (<code class="inline">index.html</code>) shows a gallery of themes, each with a
+        <b>live preview</b> inside its card (rendered exactly as the downloaded blog would look).
+        Every theme card offers three actions:
+      </p>
+      <table class="mini-table">
+        <thead><tr><th>Action</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><b>Preview</b></td><td>Open <code class="inline">preview.html?theme=&lt;id&gt;</code> — a full-page
+              live preview of that single theme in the blog shell layout.</td></tr>
+          <tr><td><b>Generate</b></td><td>Open the generator to create your blog from this theme.</td></tr>
+          <tr><td><b>Fork</b></td><td>Open the theme builder pre-loaded with that theme so you can remodel it
+              into your own and save/download it.</td></tr>
+        </tbody>
+      </table>
+      <p>
+        Themes you built and saved in the theme builder also appear here under
+        <b>Your saved themes</b>, ready to preview, generate, or edit again.
+      </p>
+    </section>
+
+    <!-- ================= 2 · Generate ================= -->
+    <section id="generate">
+      <h2 class="section-title">2 · Generate a blog</h2>
+      <p>Click <b>Generate</b> on any theme to open <code class="inline">generator.html?theme=&lt;id&gt;</code> — a
+        Word-like trial editor with a live preview. This is your chance to:</p>
+      <ul>
+        <li><b>Set site details</b> — title, subtitle, bio, accent color, and more.</li>
+        <li><b>Write posts</b> with the block editor (headings, paragraphs, quotes, lists, tables, images, code, dividers).</li>
+        <li><b>Tune design tokens</b> in the Design tokens panel — fonts, sizes, colors, layout — and watch the live preview update.</li>
+      </ul>
+      <div class="guide-step">
+        <div class="guide-step-num">✓</div>
+        <div>
+          <h3>Download your blog</h3>
+          <p>
+            Click <b>Download</b> to receive a <b>self-contained project folder</b> (a ZIP): its
+            own <code class="inline">index.html</code>, <code class="inline">edit.html</code> editor,
+            rendering engine, the compiled theme pack, and your seed data baked in.
+          </p>
+        </div>
+      </div>
+      <div class="guide-callout tip">
+        <span class="label">Fully self-contained</span><br>
+        The downloaded folder works on <code class="inline">file://</code> and on GitHub Pages /
+        Netlify. A <code class="inline">.nojekyll</code> file is included. You don't need Bloger
+        at all after this point.
+      </div>
+    </section>
+
+    <!-- ================= 3 · Edit ================= -->
+    <section id="edit">
+      <h2 class="section-title">3 · Edit your blog</h2>
+      <p>Unzip the downloaded folder. Your blog renders from <code class="inline">localStorage</code>
+        (falling back to the <code class="inline">config.js</code> seed). Everything is edited in the
+        browser:</p>
+      <div class="guide-step">
+        <div class="guide-step-num">1</div>
+        <div>
+          <h3>Open the blog</h3>
+          <p>Open <code class="inline">index.html</code> to see your homepage: a slim <b>topbar</b>
+             (sidebar toggle + site title + Edit), a <b>foldable sidebar</b> listing every post's
+             title + date, and the main content area.</p>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">2</div>
+        <div>
+          <h3>Open the editor</h3>
+          <p>Click <b>Edit</b> (site-wide) or <b>Edit</b> on any post to open
+             <code class="inline">edit.html</code>. There you can edit site settings and posts with
+             the same block editor, <b>switch themes</b> among the packs in the folder, and
+             <b>Save to localStorage</b>.</p>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">3</div>
+        <div>
+          <h3>Reload to see changes</h3>
+          <p>After saving, reopen or refresh <code class="inline">index.html</code> — your edits appear
+             because they live in that browser's localStorage.</p>
+        </div>
+      </div>
+      <div class="guide-callout tip">
+        <span class="label">Per-browser saving</span><br>
+        Edits are saved to the current browser's localStorage, so they stay on this device — that's
+        how a server-less, self-contained blog keeps everything in your hands. To move your edits to
+        another browser or machine, manage the <code class="inline">config.js</code> seed directly.
+      </div>
+    </section>
+
+    <!-- ================= 4 · Deploy ================= -->
+    <section id="deploy">
+      <h2 class="section-title">4 · Publish it</h2>
+      <p>Both <b>Bloger itself</b> and every <b>downloaded blog folder</b> are pure static and
+        deploy with no build step.</p>
+      <table class="mini-table">
+        <thead>
+          <tr><th>Where</th><th>How</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>GitHub Pages</b></td><td>Upload the blog folder and serve <code class="inline">index.html</code>, or
+              push this repo (Bloger) with the included workflow at
+              <code class="inline">.github/workflows/deploy.yml</code> and enable
+              <b>Settings → Pages → Source: GitHub Actions</b>. A <code class="inline">.nojekyll</code>
+              is included so <code class="inline">themes/</code> folders aren't dropped.</td></tr>
+          <tr><td><b>Netlify / any static host</b></td><td>Drop the blog folder in. No configuration needed.</td></tr>
+          <tr><td><b>Local / offline</b></td><td>Just open <code class="inline">index.html</code> — it works over <code class="inline">file://</code>.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ================= 5 · Build a theme ================= -->
+    <section id="themes">
+      <h2 class="section-title">5 · Build a theme</h2>
+      <p>
+        Open <b>Build a theme</b> (<code class="inline">new-theme.html</code>) from any toolbar. This is
+        the theme generator — the way to create your own visual identity:
+      </p>
+      <ol>
+        <li><b>Name</b> your theme and give it an id.</li>
+        <li><b>Tune design tokens</b> — page colors, fonts, sizes, corner radius, layout — with a
+            live shell preview updating as you go.</li>
+        <li><b>Save it to this site's localStorage</b> so it appears as a saved theme on the hub, and</li>
+        <li><b>Download it as a theme pack</b> — <code class="inline">themes/&lt;id&gt;.js</code> +
+            <code class="inline">manifest.json</code> + README.</li>
+      </ol>
+      <div class="guide-step">
+        <div class="guide-step-num">→</div>
+        <div>
+          <h3>Use a saved theme in a blog folder</h3>
+          <p>Copy the pack into the blog folder's <code class="inline">themes/</code>, add it to
+             <code class="inline">themes/index.js</code>, then pick it in
+             <code class="inline">edit.html</code>.</p>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">→</div>
+        <div>
+          <h3>Register a theme with Bloger (built-in)</h3>
+          <p>Copy the theme source into <code class="inline">themes/&lt;your-theme&gt;/</code>,
+             customize <code class="inline">manifest.json</code>, <code class="inline">index.html</code>,
+             <code class="inline">post.html</code>, and <code class="inline">assets/</code>, then add
+             an entry to <code class="inline">themes.json</code>:</p>
+          <pre class="files">{ <span class="k">"id"</span>: <span class="f">"your-theme"</span>, <span class="k">"name"</span>: <span class="f">"Your Theme"</span>, <span class="k">"description"</span>: <span class="f">"A short blurb"</span> }</pre>
+          <p>Reload the hub — your theme appears in the gallery. Removing a theme is just removing
+             its folder and its <code class="inline">themes.json</code> entry.</p>
+        </div>
+      </div>
+      <p>
+        Themes are <b>pluggable folders</b> — add a folder + register it and it shows up without
+        touching core code. A reference starter lives at
+        <code class="inline">themes/_starter/</code>, and the full authoring spec is in
+        <code class="inline">docs/THEME-SPEC.md</code>.
+      </p>
+    </section>
+
+    <!-- ================= Design tokens ================= -->
+    <section id="tokens">
+      <h2 class="section-title">Design tokens</h2>
+      <p>
+        Bloger ships a <b>design-token system</b> so you can customize a blog without touching
+        theme CSS. Tokens cover page-level and <b>block-type-specific</b> font family/size/weight/
+        color, line height, corner radius, content width, and page arrangement. They map to CSS
+        custom properties (<code class="inline">--be-…</code>) that themes consume.
+      </p>
+      <ul>
+        <li>The generator's <b>Design tokens</b> panel edits them for the current generation.</li>
+        <li>The theme builder's Design tokens panel edits them for your saved theme.</li>
+        <li>Theme defaults live in each manifest's <code class="inline">design</code> section.</li>
+      </ul>
+      <p>The canonical schema is in <code class="inline">js/design.js</code> — that's the extension
+        point if you want to add brand-new tokens.</p>
+    </section>
+
+    <!-- ================= Downloaded project ================= -->
+    <section id="projects">
+      <h2 class="section-title">What's in the downloaded project</h2>
+      <p>Every blog folder you download is a <b>self-contained project</b>:</p>
+      <pre class="files">blog/
+├── <span class="k">index.html</span>      <span class="c"># blog homepage (topbar + foldable sidebar), upload this to Pages</span>
+├── <span class="k">edit.html</span>       <span class="c"># in-project editor: settings, posts, theme switch, save</span>
+├── <span class="k">app.js</span>         <span class="c"># the folder's own rendering engine (shell layout)</span>
+├── <span class="k">edit-app.js</span>     <span class="c"># editor page logic</span>
+├── <span class="k">editor.js/css</span>   <span class="c"># Word-like block editor</span>
+├── <span class="k">config.js</span>       <span class="c"># seed data (site, posts, design)</span>
+└── <span class="k">themes/</span>         <span class="c"># compiled theme packs + registry (themes/index.js)</span>
+    ├── <span class="f">&lt;id&gt;.js</span>      <span class="c"># compiled pack (window.THEMES[&lt;id&gt;])</span>
+    └── <span class="f">index.js</span>     <span class="c"># theme registry</span></pre>
+      <div class="guide-callout warn">
+        <span class="label">No theme generator in the folder</span><br>
+        Blog folders do <b>not</b> include a theme generator — themes are built on this site
+        (Bloger), then packs are copied into the folder. If you want to tweak a theme, visit
+        <a href="generator.html">the generator page</a> and swap the pack.
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section id="faq">
+      <h2 class="section-title">Notes &amp; FAQ</h2>
+      <table class="mini-table">
+        <thead><tr><th>Topic</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>Why do I see a message about a server?</b></td>
+            <td>Bloger reads themes with <code class="inline">fetch()</code>, which browsers block
+                over <code class="inline">file://</code>. Use <code class="inline">serve.bat</code>
+                or deploy to GitHub Pages. The <i>downloaded blog folder</i> works over
+                <code class="inline">file://</code>.</td>
+          </tr>
+          <tr>
+            <td><b>Where do my edits live?</b></td>
+            <td>In the browser's <code class="inline">localStorage</code> of the downloaded project,
+                with <code class="inline">config.js</code> as the seed fallback. Export/copy
+                <code class="inline">config.js</code> to move data between browsers.</td>
+          </tr>
+          <tr>
+            <td><b>Can I add more themes to my folder?</b></td>
+            <td>Yes. Drop a theme pack into <code class="inline">themes/</code>, register it in
+                <code class="inline">themes/index.js</code>, and it appears in
+                <code class="inline">edit.html</code>'s theme switcher.</td>
+          </tr>
+          <tr>
+            <td><b>What post blocks are supported?</b></td>
+            <td>Heading, paragraph, quote, list, table, image, code, and divider — composed as block
+                objects in the editor.</td>
+          </tr>
+          <tr>
+            <td><b>Where can I learn to write themes?</b></td>
+            <td>Read <code class="inline">docs/THEME-SPEC.md</code> for the full schema and
+                conventions, and copy <code class="inline">themes/_starter/</code> as a template.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="guide-hero">
+      <p>Start on the <a href="index.html">hub</a>, generate a blog you love, edit
+      it, publish it, and if inspiration strikes — <a href="new-theme.html">build your own theme</a>.</p>
+    </div>
+  </main>
+
+  <footer class="tool-footer">
+    <span>© Bloger — How to use Bloger</span>
+    <span><a href="index.html">Back to themes →</a></span>
+  </footer>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

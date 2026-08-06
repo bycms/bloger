@@ -1,23 +1,27 @@
 /* ============================================================
-   Minimal
+   Azure — light-blue theme with dark-blue text.
+   Page background is a pale blue; the content column is white,
+   and everything reads in dark blue with blue accents. Corner
+   radius is 4px and the runtime keeps the sidebar enabled
+   ("with-sidebar" arrangement).
    ============================================================
    Layout note: the Bloger runtime provides the topbar, the
-   foldable sidebar and the footer. This stylesheet only styles
-   the content (hero + posts). It reads design tokens (--be-*)
-   so adopters can customize colors, fonts and corner radius.
+   foldable sidebar and the footer. This stylesheet styles the
+   content (hero + posts) and reads design tokens (--be-*) so
+   adopters can customize colors, fonts and corner radius.
    ============================================================ */
 
 :root {
-  --fg: var(--be-text, #111111);
-  --muted: var(--be-muted, #6b6b6b);
-  --line: var(--be-border, #e0e0e0);
-  --soft: #f4f4f4;
-  --radius: var(--be-corner-radius, 0px);
+  --fg: var(--be-text, #1e3a8a);
+  --muted: var(--be-muted, #64748b);
+  --line: var(--be-border, #dbeafe);
+  --soft: var(--be-table-head-bg, #dbeafe);
+  --radius: var(--be-corner-radius, 4px);
   --body-font: var(--be-body-font, system-ui);
 }
 
 body {
-  background: var(--be-page-bg, #ffffff);
+  background: var(--be-page-bg, #eff6ff);
   color: var(--fg);
   font-family: var(--body-font), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: var(--be-body-size, 16px);
@@ -27,67 +31,67 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: var(--be-selection-bg, #000000); color: var(--be-selection-fg, #ffffff); }
-a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--be-focus-ring, #111111); outline-offset: 2px; }
+::selection { background: var(--be-selection-bg, #1e3a8a); color: var(--be-selection-fg, #ffffff); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--be-focus-ring, #2563eb); outline-offset: 2px; }
 
-a { color: var(--be-link-color, var(--fg)); text-decoration: var(--be-link-underline, underline); text-decoration-thickness: var(--be-link-thickness, 1px); text-underline-offset: 2px; }
-a:hover { color: var(--be-link-hover-color, var(--fg)); }
+a { color: var(--be-link-color, #2563eb); text-decoration: var(--be-link-underline, underline); text-decoration-thickness: var(--be-link-thickness, 1px); text-underline-offset: 2px; }
+a:hover { color: var(--be-link-hover-color, #1d4ed8); }
 
 /* ---------- controls: buttons, inputs, selects ---------- */
 button, input, select, textarea {
   font-family: var(--be-body-font, inherit);
   font-size: var(--be-body-size, 16px);
   line-height: 1.5;
-  color: var(--be-text, #111111);
-  background: var(--be-page-bg, #ffffff);
-  border: 1px solid var(--be-border, #e0e0e0);
-  border-radius: var(--be-corner-radius, 0px);
+  color: var(--fg);
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: var(--be-corner-radius, 4px);
   padding: 8px 12px;
   transition: background var(--be-duration, .18s) var(--be-easing, ease),
               color var(--be-duration, .18s) var(--be-easing, ease),
               border-color var(--be-duration, .18s) var(--be-easing, ease);
 }
 button { cursor: pointer; }
-button:hover, input:hover, select:hover, textarea:hover { border-color: var(--be-muted, #6b6b6b); }
-button.primary, .btn { background: var(--be-accent, #111111); border-color: var(--be-accent, #111111); color: #ffffff; }
-button.primary:hover, .btn:hover { opacity: .88; border-color: var(--be-accent, #111111); }
+button:hover, input:hover, select:hover, textarea:hover { border-color: var(--muted); }
+button.primary, .btn { background: var(--be-accent, #2563eb); border-color: var(--be-accent, #2563eb); color: #ffffff; }
+button.primary:hover, .btn:hover { opacity: .88; border-color: var(--be-accent, #2563eb); }
 
 /* shell chrome controls (topbar toggle + Edit) */
 .be-toggle {
   display: flex; align-items: center; justify-content: center;
   padding: 0;
-  background: var(--be-page-bg, #ffffff);
-  color: var(--be-text, #111111);
-  border: 1px solid var(--be-border, #e0e0e0);
-  border-radius: var(--be-toggle-radius, var(--be-corner-radius, 0px));
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: var(--be-toggle-radius, var(--be-corner-radius, 4px));
 }
-.be-toggle:hover { color: var(--be-accent, #111111); border-color: var(--be-muted, #6b6b6b); }
+.be-toggle:hover { color: var(--be-accent, #2563eb); border-color: var(--muted); }
 .be-edit-link {
   display: inline-flex; align-items: center; justify-content: center;
-  background: var(--be-page-bg, #ffffff);
-  color: var(--be-text, #111111);
-  border: 1px solid var(--be-border, #e0e0e0);
-  border-radius: var(--be-corner-radius, 0px);
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: var(--be-corner-radius, 4px);
   padding: 6px 12px;
   font-size: 13px;
   text-decoration: none;
   transition: color var(--be-duration, .18s) var(--be-easing, ease),
               border-color var(--be-duration, .18s) var(--be-easing, ease);
 }
-.be-edit-link:hover { color: var(--be-accent, #111111); border-color: var(--be-muted, #6b6b6b); text-decoration: none; }
+.be-edit-link:hover { color: var(--be-accent, #2563eb); border-color: var(--muted); text-decoration: none; }
 
 /* ---------- hero (empty-state home) ---------- */
-.be-hero { padding: 24px 0 8px; }
+.be-hero { padding: 8px 0; }
 .be-hero-title { font-family: var(--be-h1-font, inherit); font-size: var(--be-h1-size, 32px); line-height: var(--be-h1-lh, 1.25); font-weight: var(--be-h1-weight, 700); letter-spacing: var(--be-h1-ls, -0.02em); color: var(--be-h1-color, var(--fg)); margin: 0 0 8px; }
 .be-hero-sub { color: var(--muted); font-size: 18px; margin: 0 0 12px; }
 .be-hero-bio { color: var(--muted); font-size: 15px; margin: 0 0 20px; max-width: 46em; }
 .be-hero-cta { margin: 24px 0 8px; }
 .be-hero-cta a {
   display: inline-block;
-  background: var(--be-accent, #111111);
+  background: var(--be-accent, #2563eb);
   color: #ffffff;
-  border: 1px solid var(--be-accent, #111111);
-  border-radius: var(--be-corner-radius, 0px);
+  border: 1px solid var(--be-accent, #2563eb);
+  border-radius: var(--be-corner-radius, 4px);
   padding: 10px 18px;
   font-size: 15px;
   text-decoration: none;
@@ -140,30 +144,30 @@ button.primary:hover, .btn:hover { opacity: .88; border-color: var(--be-accent, 
   line-height: var(--be-list-lh, 1.7);
   font-weight: var(--be-list-weight, 400);
   letter-spacing: var(--be-list-ls, 0);
-  color: var(--be-list-color, inherit);
+  color: var(--be-list-color, var(--fg));
   padding-left: var(--be-list-indent, 1.4em);
   border-radius: var(--be-list-radius, var(--radius));
 }
 .post-body ul { list-style-type: var(--be-list-marker, disc); }
 .post-body ol { list-style-type: var(--be-list-marker, decimal); }
-.post-body li::marker { color: var(--be-list-marker-c, var(--muted)); }
+.post-body li::marker { color: var(--muted); }
 .post-body li + li { margin-top: var(--be-list-gap, 2px); }
 
 /* ---------- links ---------- */
-.post-body a { color: var(--be-link-color, var(--fg)); text-decoration: var(--be-link-underline, underline); text-decoration-thickness: var(--be-link-thickness, 1px); text-underline-offset: 2px; }
-.post-body a:hover { color: var(--be-link-hover-color, var(--fg)); }
+.post-body a { color: var(--be-link-color, #2563eb); text-decoration: var(--be-link-underline, underline); text-decoration-thickness: var(--be-link-thickness, 1px); text-underline-offset: 2px; }
+.post-body a:hover { color: var(--be-link-hover-color, #1d4ed8); }
 
 /* ---------- blockquote ---------- */
 .post-body blockquote {
   background: var(--be-quote-bg, transparent);
-  border-left: var(--be-quote-border-w, 3px) solid var(--be-quote-border, var(--fg));
+  border-left: var(--be-quote-border-w, 3px) solid var(--be-quote-border, #2563eb);
   padding-left: 16px;
   font-family: var(--be-quote-font, inherit);
   font-size: var(--be-quote-size, 16px);
   line-height: var(--be-quote-lh, 1.7);
   font-weight: var(--be-quote-weight, 400);
   letter-spacing: var(--be-quote-ls, 0);
-  color: var(--be-quote-color, var(--muted));
+  color: var(--be-quote-color, #3b5b9a);
   font-style: var(--be-quote-style, italic);
   text-align: var(--be-quote-align, inherit);
   border-radius: var(--be-quote-radius, var(--radius));
@@ -171,7 +175,7 @@ button.primary:hover, .btn:hover { opacity: .88; border-color: var(--be-accent, 
 
 /* ---------- inline code ---------- */
 .post-body code {
-  background: var(--be-code-bg, var(--soft));
+  background: var(--soft);
   padding: 2px 5px;
   font-size: 0.9em;
   font-family: var(--be-code-font, ui-monospace, SFMono-Regular, Consolas, Menlo, monospace);
@@ -197,15 +201,15 @@ button.primary:hover, .btn:hover { opacity: .88; border-color: var(--be-accent, 
   line-height: var(--be-table-lh, 1.5);
   font-weight: var(--be-table-weight, 400);
   letter-spacing: var(--be-table-ls, 0);
-  color: var(--be-table-color, inherit);
+  color: var(--be-table-color, var(--fg));
   text-align: var(--be-table-align, inherit);
   border-radius: var(--be-table-radius, var(--radius));
   overflow: hidden;
 }
 .post-body td, .post-body th { border: 1px solid var(--be-table-border, var(--line)); padding: var(--be-table-cell-p, 8px 10px); text-align: left; }
-.post-body th { background: var(--be-table-head-bg, #f4f4f4); color: var(--be-table-head-c, var(--fg)); font-weight: 600; }
+.post-body th { background: var(--be-table-head-bg, var(--soft)); color: var(--be-table-head-c, var(--fg)); font-weight: 600; }
 .post-body tbody tr:nth-child(even) { background: var(--be-table-stripe, transparent); }
-.post-body tbody tr:hover { background: var(--be-table-hover, rgba(0,0,0,0.04)); }
+.post-body tbody tr:hover { background: var(--be-table-hover, rgba(37, 99, 235, 0.06)); }
 .post-body .table-wrap { overflow-x: auto; }
 
 /* ---------- code block ---------- */

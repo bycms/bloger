@@ -14,11 +14,20 @@ var Bloger = window.Bloger || {};
           '<span class="brand-mark">B</span>' +
           '<span class="brand-name">Bloger</span>' +
         "</a>" +
-        '<nav class="toolbar-links">' +
-          '<a href="index.html">Themes</a>' +
-          '<a href="new-theme.html">Build a theme</a>' +
-        "</nav>" +
+        '<div class="toolbar-right">' +
+          '<nav class="toolbar-links">' +
+            '<a href="index.html">Themes</a>' +
+            '<a href="new-theme.html">Build a theme</a>' +
+            '<a href="guideline.html">Guide</a>' +
+          "</nav>" +
+          '<button class="theme-toggle" type="button" aria-label="Toggle color mode" title="Toggle color mode">' +
+            "\u263E" +
+          "</button>" +
+        "</div>" +
       "</div>";
+    // Colour-mode toggle lives in the shared toolbar; wire it up now that
+    // the button exists (js/theme-mode.js is loaded earlier in <head>).
+    if (Bloger.ThemeMode && Bloger.ThemeMode.init) Bloger.ThemeMode.init();
   }
 })();
 

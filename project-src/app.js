@@ -92,7 +92,7 @@
     ".be-sidebar-date{display:block;font-size:var(--be-sidebar-date-size,12px);color:var(--be-sidebar-date-color,var(--be-muted,#666));margin-top:3px;}" +
     ".be-sidebar-empty{padding:6px 10px;color:var(--be-muted,#666);font-size:13px;}" +
     "body.be-collapsed .be-sidebar{width:0;padding-left:0;padding-right:0;border-right:0;overflow:hidden;}" +
-    ".be-preview .be-sidebar{display:none;}" +
+    "body.be-no-sidebar .be-sidebar,body.be-no-sidebar .be-toggle{display:none;}" +
     ".be-content{flex:1;min-width:0;padding:36px 44px;background:var(--be-content-bg,transparent);}" +
     ".be-content-inner{max-width:var(--be-max-width,680px);margin:0 auto;}" +
     ".be-footer{background:var(--be-footer-bg,var(--be-page-bg,#fff));border-top:1px solid var(--be-footer-border,var(--be-border,#e0e0e0));color:var(--be-footer-fg,var(--be-muted,#666));font-size:var(--be-footer-size,12px);" +
@@ -101,7 +101,25 @@
     "@media (max-width:640px){" +
       ".be-sidebar{display:none;}" +
       ".be-content{padding:20px 18px;}" +
-    "}";
+    "}" +
+    /* Background image layers (page + shell areas) with blur + opacity. */
+    "body{position:relative;}" +
+    "body::before{content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;background:#fff;" +
+      "background-image:var(--be-page-bg-image,none);background-position:center;background-size:cover;background-repeat:no-repeat;" +
+      "filter:blur(var(--be-page-bg-blur,0px));opacity:var(--be-page-bg-opacity,1);}" +
+    ".be-topbar{position:relative;}" +
+    ".be-topbar::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;" +
+      "background-image:var(--be-topbar-bg-image,none);background-position:center;background-size:cover;background-repeat:no-repeat;" +
+      "filter:blur(var(--be-topbar-bg-blur,0px));opacity:var(--be-topbar-bg-opacity,1);}" +
+    ".be-sidebar{position:relative;}" +
+    ".be-sidebar::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;" +
+      "background-image:var(--be-sidebar-bg-image,none);background-position:center;background-size:cover;background-repeat:no-repeat;" +
+      "filter:blur(var(--be-sidebar-bg-blur,0px));opacity:var(--be-sidebar-bg-opacity,1);}" +
+    ".be-footer{position:relative;}" +
+    ".be-footer::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;" +
+      "background-image:var(--be-footer-bg-image,none);background-position:center;background-size:cover;background-repeat:no-repeat;" +
+      "filter:blur(var(--be-footer-bg-blur,0px));opacity:var(--be-footer-bg-opacity,1);}" +
+    ".be-sidebar > *, .be-footer > *{position:relative;}";
 
   Blog.SHELL_CSS = SHELL_CSS;
 
@@ -306,28 +324,37 @@
   }
 
   // Full page shell: topbar + foldable sidebar + main content + footer.
-  function renderShell(data, contentHtml, currentId) {
+  // The sidebar follows the page arrangement token — "single-column" themes
+  // ship with the sidebar (and its toggle) disabled.
+  function renderShell(data, contentHtml, currentId, design) {
     var site = data.site || {};
     var title = site.title || "Blog";
     var year = new Date().getFullYear();
+    var isSidebar = !(design && design.page && design.page.arrangement === "single-column");
+    var toggle = isSidebar
+      ? '<button class="be-toggle" id="be-toggle" type="button" aria-label="Toggle sidebar">☰</button>'
+      : "";
+    var sidebar = isSidebar
+      ? '<aside class="be-sidebar" id="be-sidebar">' +
+          '<div class="be-sidebar-head">Posts</div>' +
+          renderSidebar(data, currentId) +
+        "</aside>"
+      : "";
     return (
       '<header class="be-topbar">' +
-        '<button class="be-toggle" id="be-toggle" type="button" aria-label="Toggle sidebar">☰</button>' +
+        toggle +
         '<a class="be-site-title" href="#/">' + esc(title) + "</a>" +
         '<span class="be-topbar-actions">' +
           '<a class="be-edit-link" href="edit.html">Edit</a>' +
         "</span>" +
       "</header>" +
       '<div class="be-shell">' +
-        '<aside class="be-sidebar" id="be-sidebar">' +
-          '<div class="be-sidebar-head">Posts</div>' +
-          renderSidebar(data, currentId) +
-        "</aside>" +
+        sidebar +
         '<main class="be-content"><div class="be-content-inner">' + contentHtml + "</div></main>" +
       "</div>" +
       '<footer class="be-footer">' +
         "<span>© " + year + " " + esc(title) + "</span>" +
-        "<span>Powered by Bloger</span>" +
+        "<span>Powered by <a href='https://github.com/bycms/bloger'>Bloger</a></span>" +
       "</footer>"
     );
   }
@@ -414,7 +441,7 @@
       var content = view.id
         ? renderPost(theme, data, view.id)
         : renderHome(theme, data);
-      app.innerHTML = renderShell(data, content, view.id);
+      app.innerHTML = renderShell(data, content, view.id, theme.design);
 
       // Sidebar fold wiring.
       if (isCollapsed()) document.body.classList.add("be-collapsed");
